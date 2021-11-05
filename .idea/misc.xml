@@ -3,9 +3,13 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/RadioAppTrial/app/src/main/res/drawable/spinner_bg.xml" value="0.264" />
+        <entry key="..\:/RadioAppTrial/app/src/main/res/drawable/spinner_sla.xml" value="0.15989583333333332" />
         <entry key="..\:/RadioAppTrial/app/src/main/res/layout/activity_main.xml" value="0.14990942028985507" />
         <entry key="..\:/RadioAppTrial/app/src/main/res/layout/channel_item.xml" value="0.14990942028985507" />
         <entry key="..\:/RadioAppTrial/app/src/main/res/layout/fragment_radio_channels.xml" value="0.14990942028985507" />
+        <entry key="..\:/RadioAppTrial/app/src/main/res/layout/spinner_dropdown_item.xml" value="0.14375" />
+        <entry key="..\:/RadioAppTrial/app/src/main/res/layout/spinner_item_selected.xml" value="0.264" />
       </map>
     </option>
   </component>

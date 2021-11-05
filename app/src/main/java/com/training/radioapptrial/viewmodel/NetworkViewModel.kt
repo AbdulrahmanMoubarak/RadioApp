@@ -1,5 +1,6 @@
 package com.training.radioapptrial.viewmodel
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -19,7 +20,8 @@ constructor(
     val client: RadioStationsClient
 ): ViewModel() {
 
-    val Stations = Pager(PagingConfig(NetworkConstants.PAGE_SIZE)){
+    var Stations = Pager(PagingConfig(NetworkConstants.PAGE_SIZE)) {
         StationsPagingSource(client)
     }.flow.cachedIn(viewModelScope)
+
 }
