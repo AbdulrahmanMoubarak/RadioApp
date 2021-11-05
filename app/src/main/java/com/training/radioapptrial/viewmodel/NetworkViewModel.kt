@@ -8,6 +8,7 @@ import androidx.paging.cachedIn
 import com.training.radioapptrial.api.ApiService
 import com.training.radioapptrial.api.RadioStationsClient
 import com.training.radioapptrial.ui.paging.StationsPagingSource
+import com.training.radioapptrial.util.NetworkConstants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -18,7 +19,7 @@ constructor(
     val client: RadioStationsClient
 ): ViewModel() {
 
-    val Stations = Pager(PagingConfig(50)){
+    val Stations = Pager(PagingConfig(NetworkConstants.PAGE_SIZE)){
         StationsPagingSource(client)
     }.flow.cachedIn(viewModelScope)
 }

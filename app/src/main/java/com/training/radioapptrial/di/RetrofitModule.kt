@@ -2,7 +2,7 @@ package com.training.radioapptrial.di
 
 import com.training.radioapptrial.api.ApiService
 import com.training.radioapptrial.api.RadioStationsClient
-import com.training.radioapptrial.util.Constants.BASE_URL
+import com.training.radioapptrial.util.NetworkConstants.BASE_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

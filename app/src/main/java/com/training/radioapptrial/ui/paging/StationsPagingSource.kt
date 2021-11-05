@@ -19,18 +19,18 @@ class StationsPagingSource(var client: RadioStationsClient) :
             val response = client.getRadioStations(page)
             val responseData = mutableListOf<RadioChannelModel>()
             val data = response.body()?.radios ?: emptyList()
-
+            Log.d("here", "${response.body()}")
             responseData.addAll(data)
-            Log.d("here", "load: got data")
             LoadResult.Page(
                 responseData,
-                if (page <= 1) null else page.minus(1),
-                if (page >= 3) null else  page.plus(1)
+                prevKey = if (page <= 1) null else page-1,
+                nextKey = if (page >= 3) null else  page+1
             )
 
         } catch (e: Exception) {
-            Log.d("here", "load: failed to get data")
+            Log.d("here", "${e.message}")
             LoadResult.Error(e)
+
         }
     }
 }
