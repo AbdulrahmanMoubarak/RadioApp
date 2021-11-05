@@ -37,13 +37,6 @@ class ChannelAdapter() : PagingDataAdapter<RadioChannelModel, ChannelAdapter.Cha
     }
 
     override fun onBindViewHolder(holder: ChannelViewHolder, position: Int) {
-        val genre = getItem(position)?.genre
-        holder.channelName.text = getItem(position)?.name
-        val imageUrl = getItem(position)?.image_url
-        holder.channelImage.load(imageUrl){
-            crossfade(true)
-            crossfade(1000)
-        }
     }
 
     inner class NormalRecyclerAdapter: RecyclerView.Adapter<ChannelViewHolder>(){
