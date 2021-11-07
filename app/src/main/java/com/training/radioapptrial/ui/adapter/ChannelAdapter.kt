@@ -39,7 +39,7 @@ class ChannelAdapter() : PagingDataAdapter<RadioChannelModel, ChannelAdapter.Cha
     override fun onBindViewHolder(holder: ChannelViewHolder, position: Int) {
     }
 
-    inner class NormalRecyclerAdapter: RecyclerView.Adapter<ChannelViewHolder>(){
+    inner class NormalRecyclerAdapter(val onChannelClick: (channel: RadioChannelModel) -> Unit = {}): RecyclerView.Adapter<ChannelViewHolder>(){
         var selectedFilter = "Genres"
         private var Item_List = ArrayList<RadioChannelModel>()
 
@@ -50,7 +50,6 @@ class ChannelAdapter() : PagingDataAdapter<RadioChannelModel, ChannelAdapter.Cha
         }
 
         override fun onBindViewHolder(holder: ChannelViewHolder, position: Int) {
-            val genre = Item_List.get(position).genre
             holder.channelName.text = Item_List.get(position).name
             val imageUrl = Item_List.get(position).image_url
             holder.channelImage.load(imageUrl){
@@ -58,7 +57,9 @@ class ChannelAdapter() : PagingDataAdapter<RadioChannelModel, ChannelAdapter.Cha
                 crossfade(1000)
             }
 
-
+            holder.itemView.setOnClickListener {
+                onChannelClick(Item_List.get(position))
+            }
         }
 
         fun filter(){

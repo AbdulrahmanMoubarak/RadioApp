@@ -59,6 +59,9 @@ class StationsPagingSource(var client: RadioStationsClient) :
                 }
             }
         }
+        genreList.remove("Genres")
+        genreList.sort()
+        genreList.add(0, "Genres")
         genresLiveData.postValue(genreList)
     }
 }
