@@ -1,9 +1,13 @@
 package com.training.radioapptrial.ui
 
-import android.net.Uri
+import android.content.Context
+import android.media.AudioAttributes
+import android.media.AudioFocusRequest
+import android.media.AudioManager
+import android.media.AudioManager.OnAudioFocusChangeListener
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
@@ -14,29 +18,25 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
-import com.google.android.exoplayer2.SimpleExoPlayer
 import com.training.radioapptrial.R
-import com.training.radioapptrial.factory.MediaSourceAbstractFactory
-import com.training.radioapptrial.listener.PlayerListener
 import com.training.radioapptrial.model.RadioChannelModel
 import com.training.radioapptrial.ui.adapter.ChannelAdapter
 import com.training.radioapptrial.ui.paging.StationsPagingSource
+import com.training.radioapptrial.viewmodel.MediaViewModel
 import com.training.radioapptrial.viewmodel.NetworkViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_radio_channels.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-
 @AndroidEntryPoint
 class FragmentRadioChannels : Fragment() {
 
-    private val viewModel: NetworkViewModel by viewModels()
+    private val networkViewModel: NetworkViewModel by viewModels()
+    private val mediaViewModel: MediaViewModel by viewModels()
+
     private var recyclerAdapter = ChannelAdapter()
     val normalRecyclerAdapter = recyclerAdapter.NormalRecyclerAdapter(::onChannelClick)
-    lateinit var mediaPlayer: SimpleExoPlayer
-    private var isPlaying = false
-    private var isFailure = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,6 +58,8 @@ class FragmentRadioChannels : Fragment() {
 
         subscribeGenres()
 
+        requestAudioFocus()
+
         miniPlayer.animate().translationYBy(300f).setDuration(0).start()
         genresSelector.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
@@ -70,41 +72,25 @@ class FragmentRadioChannels : Fragment() {
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
             }
-
         }
 
         button_play_pause.setOnClickListener {
-            if (isPlaying) {
+            if (mediaViewModel.isPlaying) {
                 pausePlayer()
             } else {
                 resumePlayer()
             }
         }
-
-
     }
 
     private fun loadChannels() {
         lifecycleScope.launch {
-            viewModel.Stations.collect {
+            networkViewModel.Stations.collect {
                 recyclerAdapter.submitData(it)
                 normalRecyclerAdapter.submitList(recyclerAdapter.snapshot().items as ArrayList<RadioChannelModel>)
             }
         }
     }
-
-    private fun filterByGenre(genre: String): MutableList<RadioChannelModel> {
-        val list = recyclerAdapter.snapshot().items as MutableList<RadioChannelModel>
-        if (genre != "Genre") {
-            for (item in list) {
-                if (!item.genre.equals(genre)) {
-                    list.remove(item)
-                }
-            }
-        }
-        return list
-    }
-
 
     private fun subscribeGenres() {
         StationsPagingSource.genresLiveData.observe(requireActivity()) {
@@ -115,23 +101,11 @@ class FragmentRadioChannels : Fragment() {
     }
 
     private fun initExoPlayer() {
-        mediaPlayer = SimpleExoPlayer.Builder(requireContext()).build()
-        mediaPlayer.playWhenReady = true
-        mediaPlayer.addListener(PlayerListener(::onPlayerError, ::displayProgressbar))
+        mediaViewModel.setPlayerEvents(::onPlayerError, ::displayProgressbar)
     }
 
     private fun playNewStation(channel: RadioChannelModel) {
-        isPlaying = true
-        isFailure = false
-        mediaPlayer.stop()
-        mediaPlayer.setMediaSource(
-            MediaSourceAbstractFactory().getMediaSourceFactoy(
-                Uri.parse(
-                    channel.uri
-                )
-            )
-        )
-        mediaPlayer.prepare()
+        mediaViewModel.playNewStation(channel)
     }
 
     private fun onChannelClick(channel: RadioChannelModel) {
@@ -149,29 +123,64 @@ class FragmentRadioChannels : Fragment() {
     }
 
     private fun pausePlayer() {
-        if(!isFailure) {
-            isPlaying = false
+        if(!mediaViewModel.isFailure) {
+            mediaViewModel.pausePlayer()
             button_play_pause.setImageResource(R.drawable.ic_play_svgrepo_com)
-            mediaPlayer.pause()
         }
     }
 
     private fun resumePlayer() {
-        if(!isFailure) {
-            isPlaying = true
+        if(!mediaViewModel.isFailure) {
+            mediaViewModel.resumePlayer()
             button_play_pause.setImageResource(R.drawable.ic_pause_svgrepo_com)
-            mediaPlayer.play()
         }
     }
 
     private fun onPlayerError(){
-        isPlaying = false
-        isFailure = true
+        mediaViewModel.isPlaying = false
+        mediaViewModel.isFailure = true
         button_play_pause.setImageResource(R.drawable.ic_play_svgrepo_com)
         Toast.makeText(requireContext(), "Error playing the channel", Toast.LENGTH_SHORT).show()
     }
 
     private fun displayProgressbar(isDisplayed: Boolean) {
         progress_bar.visibility = if (isDisplayed) View.VISIBLE else View.GONE
+    }
+
+    private fun requestAudioFocus() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val am = requireActivity().getSystemService(Context.AUDIO_SERVICE) as AudioManager
+            am.requestAudioFocus(
+                AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+                    .setAudioAttributes(
+                        AudioAttributes.Builder()
+                            .setUsage(AudioAttributes.USAGE_MEDIA)
+                            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                            .build()
+                    )
+                    .setAcceptsDelayedFocusGain(true)
+                    .setOnAudioFocusChangeListener(addOnAudioFocusChangedListener()).build()
+            )
+        }
+    }
+
+    private fun addOnAudioFocusChangedListener(): OnAudioFocusChangeListener{
+        return OnAudioFocusChangeListener { focusChange ->
+            when (focusChange) {
+                AudioManager.AUDIOFOCUS_GAIN -> {
+                    resumePlayer()
+                }
+                AudioManager.AUDIOFOCUS_GAIN_TRANSIENT -> {
+                    resumePlayer()
+                }
+
+                AudioManager.AUDIOFOCUS_LOSS -> {
+                    pausePlayer()
+                }
+                AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
+                    pausePlayer()
+                }
+            }
+        }
     }
 }

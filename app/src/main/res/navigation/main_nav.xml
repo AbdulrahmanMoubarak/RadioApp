@@ -3,8 +3,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_nav"
-    app:startDestination="@id/fragmentRadioChannels">
-
+    app:startDestination="@id/radioSplashFragment">
+    <fragment
+        android:id="@+id/radioSplashFragment"
+        android:name="com.training.radioapptrial.ui.RadioSplashFragment"
+        android:label="fragment_radio_splash"
+        tools:layout="@layout/fragment_radio_splash" >
+        <action
+            android:id="@+id/action_radioSplashFragment_to_fragmentRadioChannels"
+            app:destination="@id/fragmentRadioChannels"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popUpTo="@id/radioSplashFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
     <fragment
         android:id="@+id/fragmentRadioChannels"
         android:name="com.training.radioapptrial.ui.FragmentRadioChannels"
