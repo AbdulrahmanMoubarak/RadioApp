@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -16,6 +17,7 @@ import coil.load
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.training.radioapptrial.R
 import com.training.radioapptrial.factory.MediaSourceAbstractFactory
+import com.training.radioapptrial.listener.PlayerListener
 import com.training.radioapptrial.model.RadioChannelModel
 import com.training.radioapptrial.ui.adapter.ChannelAdapter
 import com.training.radioapptrial.ui.paging.StationsPagingSource
@@ -34,6 +36,7 @@ class FragmentRadioChannels : Fragment() {
     val normalRecyclerAdapter = recyclerAdapter.NormalRecyclerAdapter(::onChannelClick)
     lateinit var mediaPlayer: SimpleExoPlayer
     private var isPlaying = false
+    private var isFailure = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,6 +58,7 @@ class FragmentRadioChannels : Fragment() {
 
         subscribeGenres()
 
+        miniPlayer.animate().translationYBy(300f).setDuration(0).start()
         genresSelector.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 normalRecyclerAdapter.selectedFilter = parent?.getItemAtPosition(p2).toString()
@@ -113,10 +117,12 @@ class FragmentRadioChannels : Fragment() {
     private fun initExoPlayer() {
         mediaPlayer = SimpleExoPlayer.Builder(requireContext()).build()
         mediaPlayer.playWhenReady = true
+        mediaPlayer.addListener(PlayerListener(::onPlayerError, ::displayProgressbar))
     }
 
     private fun playNewStation(channel: RadioChannelModel) {
         isPlaying = true
+        isFailure = false
         mediaPlayer.stop()
         mediaPlayer.setMediaSource(
             MediaSourceAbstractFactory().getMediaSourceFactoy(
@@ -129,28 +135,43 @@ class FragmentRadioChannels : Fragment() {
     }
 
     private fun onChannelClick(channel: RadioChannelModel) {
-        if(miniPlayer.visibility == View.GONE) {
+        if(miniPlayer.visibility == View.INVISIBLE) {
             miniPlayer.visibility = View.VISIBLE
-            miniPlayer.animate().translationYBy(-280f).setDuration(300).start()
+            miniPlayer.animate().translationYBy(-300f).setDuration(300).start()
         }
         imageView_channel.load(channel.image_url) {
             crossfade(true)
             crossfade(1000)
         }
+        button_play_pause.setImageResource(R.drawable.ic_pause_svgrepo_com)
         textView_channelName.text = channel.name
         playNewStation(channel)
     }
 
     private fun pausePlayer() {
-
-        isPlaying = false
-        button_play_pause.setImageResource(R.drawable.ic_play_svgrepo_com)
-        mediaPlayer.pause()
+        if(!isFailure) {
+            isPlaying = false
+            button_play_pause.setImageResource(R.drawable.ic_play_svgrepo_com)
+            mediaPlayer.pause()
+        }
     }
 
     private fun resumePlayer() {
-        isPlaying = true
-        button_play_pause.setImageResource(R.drawable.ic_pause_svgrepo_com)
-        mediaPlayer.play()
+        if(!isFailure) {
+            isPlaying = true
+            button_play_pause.setImageResource(R.drawable.ic_pause_svgrepo_com)
+            mediaPlayer.play()
+        }
+    }
+
+    private fun onPlayerError(){
+        isPlaying = false
+        isFailure = true
+        button_play_pause.setImageResource(R.drawable.ic_play_svgrepo_com)
+        Toast.makeText(requireContext(), "Error playing the channel", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun displayProgressbar(isDisplayed: Boolean) {
+        progress_bar.visibility = if (isDisplayed) View.VISIBLE else View.GONE
     }
 }

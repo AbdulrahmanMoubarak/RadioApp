@@ -1,0 +1,34 @@
+package com.training.radioapptrial.listener
+
+import android.media.session.PlaybackState
+import android.util.Log
+import android.widget.Toast
+import com.google.android.exoplayer2.PlaybackException
+import com.google.android.exoplayer2.Player
+
+class PlayerListener(
+    val onErrorEvent: () -> Unit = {},
+    val onLoadingEvent: (Boolean) -> Unit = {}
+): Player.Listener {
+
+    override fun onPlayerError(error: PlaybackException) {
+        onLoadingEvent(false)
+        onErrorEvent()
+    }
+
+    override fun onPlaybackStateChanged(playbackState: Int) {
+        super.onPlaybackStateChanged(playbackState)
+        if(playbackState == PlaybackState.STATE_BUFFERING){
+            onLoadingEvent(true)
+        } else if(playbackState == PlaybackState.STATE_PLAYING){
+            onLoadingEvent(false)
+        }
+        Log.d("here", "onPlaybackStateChanged: $playbackState")
+    }
+
+    override fun onIsLoadingChanged(isLoading: Boolean) {
+        super.onIsLoadingChanged(isLoading)
+        onLoadingEvent(isLoading)
+    }
+
+}
