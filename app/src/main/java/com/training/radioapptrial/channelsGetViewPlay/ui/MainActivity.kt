@@ -1,4 +1,4 @@
-package com.training.radioapptrial.ui
+package com.training.radioapptrial.channelsGetViewPlay.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

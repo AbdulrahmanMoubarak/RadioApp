@@ -1,14 +1,11 @@
-package com.training.radioapptrial.ui.paging
+package com.training.radioapptrial.channelsGetViewPlay.ui.paging
 
 import android.util.Log
-import android.widget.ArrayAdapter
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.training.radioapptrial.R
-import com.training.radioapptrial.api.RadioStationsClient
-import com.training.radioapptrial.model.RadioChannelModel
-import kotlinx.android.synthetic.main.fragment_radio_channels.*
+import com.training.radioapptrial.channelsGetViewPlay.channelsapi.RadioStationsClient
+import com.training.radioapptrial.channelsGetViewPlay.model.RadioChannelModel
 
 class StationsPagingSource(var client: RadioStationsClient) :
     PagingSource<Int, RadioChannelModel>() {

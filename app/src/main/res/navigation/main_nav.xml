@@ -6,7 +6,7 @@
     app:startDestination="@id/radioSplashFragment">
     <fragment
         android:id="@+id/radioSplashFragment"
-        android:name="com.training.radioapptrial.ui.RadioSplashFragment"
+        android:name="com.training.radioapptrial.channelsGetViewPlay.ui.RadioSplashFragment"
         android:label="fragment_radio_splash"
         tools:layout="@layout/fragment_radio_splash" >
         <action
@@ -19,7 +19,7 @@
     </fragment>
     <fragment
         android:id="@+id/fragmentRadioChannels"
-        android:name="com.training.radioapptrial.ui.FragmentRadioChannels"
+        android:name="com.training.radioapptrial.channelsGetViewPlay.ui.FragmentRadioChannels"
         android:label="fragment_radio_channels"
         tools:layout="@layout/fragment_radio_channels" />
 </navigation>

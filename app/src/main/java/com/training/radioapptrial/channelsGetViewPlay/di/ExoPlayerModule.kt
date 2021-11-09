@@ -1,7 +1,6 @@
-package com.training.radioapptrial.di
+package com.training.radioapptrial.channelsGetViewPlay.di
 
 import android.content.Context
-import androidx.core.content.ContentProviderCompat.requireContext
 import com.google.android.exoplayer2.SimpleExoPlayer
 import dagger.Module
 import dagger.Provides

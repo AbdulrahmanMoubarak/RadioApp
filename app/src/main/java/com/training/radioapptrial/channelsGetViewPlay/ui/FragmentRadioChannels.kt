@@ -1,4 +1,4 @@
-package com.training.radioapptrial.ui
+package com.training.radioapptrial.channelsGetViewPlay.ui
 
 import android.content.Context
 import android.media.AudioAttributes
@@ -17,13 +17,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import coil.load
 import com.training.radioapptrial.R
-import com.training.radioapptrial.model.RadioChannelModel
-import com.training.radioapptrial.ui.adapter.ChannelAdapter
-import com.training.radioapptrial.ui.paging.StationsPagingSource
-import com.training.radioapptrial.viewmodel.MediaViewModel
-import com.training.radioapptrial.viewmodel.NetworkViewModel
+import com.training.radioapptrial.channelsGetViewPlay.model.RadioChannelModel
+import com.training.radioapptrial.channelsGetViewPlay.ui.adapter.ChannelAdapter
+import com.training.radioapptrial.channelsGetViewPlay.ui.paging.StationsPagingSource
+import com.training.radioapptrial.channelsGetViewPlay.viewmodel.MediaViewModel
+import com.training.radioapptrial.channelsGetViewPlay.viewmodel.NetworkViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_radio_channels.*
 import kotlinx.coroutines.flow.collect
@@ -43,6 +42,7 @@ class FragmentRadioChannels : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.fragment_radio_channels, container, false)
     }
 
@@ -74,7 +74,7 @@ class FragmentRadioChannels : Fragment() {
             }
         }
 
-        button_play_pause.setOnClickListener {
+        miniPlayer.playPauseButton.setOnClickListener {
             if (mediaViewModel.isPlaying) {
                 pausePlayer()
             } else {
@@ -113,37 +113,34 @@ class FragmentRadioChannels : Fragment() {
             miniPlayer.visibility = View.VISIBLE
             miniPlayer.animate().translationYBy(-300f).setDuration(300).start()
         }
-        imageView_channel.load(channel.image_url) {
-            crossfade(true)
-            crossfade(1000)
-        }
-        button_play_pause.setImageResource(R.drawable.ic_pause_svgrepo_com)
-        textView_channelName.text = channel.name
+        miniPlayer.loadMedia(channel)
+        miniPlayer.play()
         playNewStation(channel)
     }
 
     private fun pausePlayer() {
         if(!mediaViewModel.isFailure) {
             mediaViewModel.pausePlayer()
-            button_play_pause.setImageResource(R.drawable.ic_play_svgrepo_com)
+            miniPlayer.pause()
         }
     }
 
     private fun resumePlayer() {
         if(!mediaViewModel.isFailure) {
             mediaViewModel.resumePlayer()
-            button_play_pause.setImageResource(R.drawable.ic_pause_svgrepo_com)
+            miniPlayer.play()
         }
     }
 
     private fun onPlayerError(){
         mediaViewModel.isPlaying = false
         mediaViewModel.isFailure = true
-        button_play_pause.setImageResource(R.drawable.ic_play_svgrepo_com)
+        miniPlayer.pause()
         Toast.makeText(requireContext(), "Error playing the channel", Toast.LENGTH_SHORT).show()
     }
 
     private fun displayProgressbar(isDisplayed: Boolean) {
+        //miniPlayer.pause()
         progress_bar.visibility = if (isDisplayed) View.VISIBLE else View.GONE
     }
 

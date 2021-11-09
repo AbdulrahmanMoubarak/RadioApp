@@ -1,4 +1,4 @@
-package com.training.radioapptrial.model
+package com.training.radioapptrial.channelsGetViewPlay.model
 
 data class ApiResponseModel(
     var has_more: Boolean,

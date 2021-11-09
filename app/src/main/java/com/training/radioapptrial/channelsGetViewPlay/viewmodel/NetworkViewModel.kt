@@ -1,15 +1,13 @@
-package com.training.radioapptrial.viewmodel
+package com.training.radioapptrial.channelsGetViewPlay.viewmodel
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
-import com.training.radioapptrial.api.ApiService
-import com.training.radioapptrial.api.RadioStationsClient
-import com.training.radioapptrial.ui.paging.StationsPagingSource
-import com.training.radioapptrial.util.NetworkConstants
+import com.training.radioapptrial.channelsGetViewPlay.channelsapi.RadioStationsClient
+import com.training.radioapptrial.channelsGetViewPlay.ui.paging.StationsPagingSource
+import com.training.radioapptrial.channelsGetViewPlay.util.NetworkConstants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

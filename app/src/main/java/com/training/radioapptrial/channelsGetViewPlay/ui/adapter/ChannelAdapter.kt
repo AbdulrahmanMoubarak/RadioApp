@@ -1,20 +1,20 @@
-package com.training.radioapptrial.ui.adapter;
+package com.training.radioapptrial.channelsGetViewPlay.ui.adapter;
 
-import android.opengl.Visibility
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.paging.PagingData
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.training.radioapptrial.R
-import com.training.radioapptrial.model.RadioChannelModel
+import com.training.radioapptrial.channelsGetViewPlay.model.RadioChannelModel
 
-class ChannelAdapter() : PagingDataAdapter<RadioChannelModel, ChannelAdapter.ChannelViewHolder>(diffCallback) {
+class ChannelAdapter() : PagingDataAdapter<RadioChannelModel, ChannelAdapter.ChannelViewHolder>(
+    diffCallback
+) {
 
 
     companion object {

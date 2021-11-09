@@ -1,8 +1,7 @@
-package com.training.radioapptrial.listener
+package com.training.radioapptrial.channelsGetViewPlay.listener
 
 import android.media.session.PlaybackState
 import android.util.Log
-import android.widget.Toast
 import com.google.android.exoplayer2.PlaybackException
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.audio.AudioAttributes

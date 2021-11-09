@@ -1,4 +1,4 @@
-package com.training.radioapptrial.di
+package com.training.radioapptrial.channelsGetViewPlay.di
 
 import android.content.Context
 import com.training.radioapptrial.application.MainApplication

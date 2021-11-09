@@ -1,4 +1,4 @@
-package com.training.radioapptrial.factory
+package com.training.radioapptrial.channelsGetViewPlay.factory
 
 import android.net.Uri
 import android.util.Log

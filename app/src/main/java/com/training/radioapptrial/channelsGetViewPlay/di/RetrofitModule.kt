@@ -1,8 +1,8 @@
-package com.training.radioapptrial.di
+package com.training.radioapptrial.channelsGetViewPlay.di
 
-import com.training.radioapptrial.api.ApiService
-import com.training.radioapptrial.api.RadioStationsClient
-import com.training.radioapptrial.util.NetworkConstants.BASE_URL
+import com.training.radioapptrial.channelsGetViewPlay.channelsapi.ApiService
+import com.training.radioapptrial.channelsGetViewPlay.channelsapi.RadioStationsClient
+import com.training.radioapptrial.channelsGetViewPlay.util.NetworkConstants.BASE_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,7 +17,7 @@ object RetrofitModule {
 
     @Singleton
     @Provides
-    fun provideRetrofit(): ApiService{
+    fun provideRetrofit(): ApiService {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
@@ -27,7 +27,7 @@ object RetrofitModule {
 
     @Singleton
     @Provides
-    fun provideRetrofitClient(service: ApiService): RadioStationsClient{
+    fun provideRetrofitClient(service: ApiService): RadioStationsClient {
         return RadioStationsClient((service))
     }
 

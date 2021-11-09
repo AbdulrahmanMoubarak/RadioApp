@@ -1,4 +1,4 @@
-package com.training.radioapptrial.util
+package com.training.radioapptrial.channelsGetViewPlay.util
 
 object NetworkConstants {
 

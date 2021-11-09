@@ -1,8 +1,7 @@
-package com.training.radioapptrial.api
+package com.training.radioapptrial.channelsGetViewPlay.channelsapi
 
-import androidx.lifecycle.MutableLiveData
-import com.training.radioapptrial.model.ApiResponseModel
-import com.training.radioapptrial.util.NetworkConstants
+import com.training.radioapptrial.channelsGetViewPlay.model.ApiResponseModel
+import com.training.radioapptrial.channelsGetViewPlay.util.NetworkConstants
 import okhttp3.internal.EMPTY_RESPONSE
 import retrofit2.Response
 import javax.inject.Inject

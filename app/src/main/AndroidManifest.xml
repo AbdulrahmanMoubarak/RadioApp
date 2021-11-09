@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RadioAppTrial">
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".channelsGetViewPlay.ui.MainActivity"
             android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>

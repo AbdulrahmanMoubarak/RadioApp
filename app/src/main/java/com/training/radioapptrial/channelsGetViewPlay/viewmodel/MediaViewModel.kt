@@ -1,16 +1,12 @@
-package com.training.radioapptrial.viewmodel
+package com.training.radioapptrial.channelsGetViewPlay.viewmodel
 
 import android.net.Uri
-import android.widget.Toast
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.ViewModel
 import com.google.android.exoplayer2.SimpleExoPlayer
-import com.training.radioapptrial.R
-import com.training.radioapptrial.factory.MediaSourceAbstractFactory
-import com.training.radioapptrial.listener.PlayerListener
-import com.training.radioapptrial.model.RadioChannelModel
+import com.training.radioapptrial.channelsGetViewPlay.factory.MediaSourceAbstractFactory
+import com.training.radioapptrial.channelsGetViewPlay.listener.PlayerListener
+import com.training.radioapptrial.channelsGetViewPlay.model.RadioChannelModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.android.synthetic.main.fragment_radio_channels.*
 import javax.inject.Inject
 
 @HiltViewModel
