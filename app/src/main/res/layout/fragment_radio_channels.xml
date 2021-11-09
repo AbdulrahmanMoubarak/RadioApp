@@ -23,10 +23,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
+
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.526"
         app:layout_constraintStart_toStartOf="parent"
-        android:layoutAnimation="@anim/recycler_animation"
         app:layout_constraintTop_toBottomOf="@+id/textViewChennels"
         app:layout_constraintVertical_bias="0.005" />
 

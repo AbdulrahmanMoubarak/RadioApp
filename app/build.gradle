@@ -83,7 +83,7 @@ dependencies {
     implementation "androidx.paging:paging-runtime:$paging_version"
 
     // Coil Base artifact without singleton
-    implementation("io.coil-kt:coil:1.1.1")
+    implementation("io.coil-kt:coil:1.4.0")
 
     // Coroutines
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2'
@@ -95,6 +95,7 @@ dependencies {
     implementation "androidx.activity:activity-ktx:1.4.0"
 
     //exoplayer
-    implementation 'com.google.android.exoplayer:exoplayer:2.15.1'
-    implementation 'com.google.android.exoplayer:exoplayer-ui:2.15.1'
+    implementation 'com.google.android.exoplayer:exoplayer:2.16.0'
+    implementation 'com.google.android.exoplayer:exoplayer-ui:2.16.0'
+    implementation 'com.google.android.exoplayer:extension-mediasession:2.16.0'
 }

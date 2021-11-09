@@ -40,7 +40,6 @@ class StationsPagingSource(var client: RadioStationsClient) :
         } catch (e: Exception) {
             Log.d("here", "${e.message}")
             LoadResult.Error(e)
-
         }
     }
 

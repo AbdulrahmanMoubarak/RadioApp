@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -27,6 +28,7 @@ import com.training.radioapptrial.channelsGetViewPlay.viewmodel.MediaViewModel
 import com.training.radioapptrial.channelsGetViewPlay.viewmodel.NetworkViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_radio_channels.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -35,9 +37,10 @@ class FragmentRadioChannels : Fragment() {
 
     private val networkViewModel: NetworkViewModel by viewModels()
     private val mediaViewModel: MediaViewModel by viewModels()
+    var animTime = 0
 
     private var recyclerAdapter = ChannelAdapter()
-    val normalRecyclerAdapter = recyclerAdapter.NormalRecyclerAdapter(::onChannelClick)
+    val normalRecyclerAdapter = recyclerAdapter.NormalRecyclerAdapter(::onChannelClick, ::displayProgressbar)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,17 +52,21 @@ class FragmentRadioChannels : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        displayProgressbar(true)
         super.onViewCreated(view, savedInstanceState)
         channels_recycler.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             this.adapter = normalRecyclerAdapter
+            layoutAnimation = AnimationUtils.loadLayoutAnimation(requireContext(), R.anim.recycler_animation)
             //scheduleLayoutAnimation()
         }
+
         initExoPlayer()
 
         loadChannels()
 
         subscribeGenres()
+
 
         miniPlayer.animate().translationYBy(300f).setDuration(0).start()
         genresSelector.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -70,8 +77,10 @@ class FragmentRadioChannels : Fragment() {
 
                 channels_recycler.adapter = normalRecyclerAdapter
 
-                //if(parent?.getItemAtPosition(p2).toString() != "Genres")
+                if(parent?.getItemAtPosition(p2).toString() != "Genres" || animTime < 1) {
+                    animTime += 1
                     channels_recycler.scheduleLayoutAnimation()
+                }
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -155,7 +164,9 @@ class FragmentRadioChannels : Fragment() {
 
     private fun displayProgressbar(isDisplayed: Boolean) {
         //miniPlayer.pause()
-        progress_bar.visibility = if (isDisplayed) View.VISIBLE else View.GONE
+        if(progress_bar != null) {
+            progress_bar.visibility = if (isDisplayed) View.VISIBLE else View.GONE
+        }
     }
 
 

@@ -2,6 +2,7 @@ package com.training.radioapptrial.channelsGetViewPlay.viewmodel
 
 import android.net.Uri
 import androidx.lifecycle.ViewModel
+import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.training.radioapptrial.channelsGetViewPlay.factory.MediaSourceAbstractFactory
 import com.training.radioapptrial.channelsGetViewPlay.listener.PlayerListener
@@ -13,7 +14,7 @@ import javax.inject.Inject
 class MediaViewModel
 @Inject
 constructor(
-    val mediaPlayer: SimpleExoPlayer
+    val mediaPlayer: ExoPlayer
 ): ViewModel() {
     var isPlaying = false
     var isFailure = false

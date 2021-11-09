@@ -16,10 +16,6 @@ class PlayerListener(
         onErrorEvent()
     }
 
-    override fun onAudioAttributesChanged(audioAttributes: AudioAttributes) {
-        super.onAudioAttributesChanged(audioAttributes)
-    }
-
     override fun onPlaybackStateChanged(playbackState: Int) {
         super.onPlaybackStateChanged(playbackState)
         if(playbackState == PlaybackState.STATE_BUFFERING){
@@ -27,7 +23,6 @@ class PlayerListener(
         } else if(playbackState == PlaybackState.STATE_PLAYING){
             onLoadingEvent(false)
         }
-        Log.d("here", "onPlaybackStateChanged: $playbackState")
     }
 
     override fun onIsLoadingChanged(isLoading: Boolean) {

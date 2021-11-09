@@ -1,6 +1,7 @@
 package com.training.radioapptrial.channelsGetViewPlay.di
 
 import android.content.Context
+import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.SimpleExoPlayer
 import dagger.Module
 import dagger.Provides
@@ -15,8 +16,8 @@ object ExoPlayerModule  {
 
     @Singleton
     @Provides
-    fun provideExoPlayer(@ApplicationContext appContext: Context): SimpleExoPlayer{
-        return SimpleExoPlayer.Builder(appContext).build().apply {
+    fun provideExoPlayer(@ApplicationContext appContext: Context): ExoPlayer {
+        return ExoPlayer.Builder(appContext).build().apply {
             playWhenReady = true
         }
     }
