@@ -66,7 +66,7 @@ class RadioService(): MediaBrowserServiceCompat() {
     private fun preparePlayer(){
         currentChannel?.let {
             exoplayer.setMediaSource(
-                MediaSourceAbstractFactory().getMediaSourceFactoy(
+                mediaSourceAbstractFactory.getMediaSourceFactoy(
                     Uri.parse(
                         it.uri
                     )
