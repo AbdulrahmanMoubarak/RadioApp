@@ -43,7 +43,7 @@
         android:stateListAnimator="@drawable/spinner_sla"
         android:popupElevation="3dp"/>
 
-    <com.training.radioapptrial.miniplayer.ui.customview.MiniMediaPlayer
+    <com.training.radioapptrial.minimediaplayer.ui.customview.MiniMediaPlayer
         android:id="@+id/miniPlayer"
         android:visibility="invisible"
         android:layout_width="match_parent"

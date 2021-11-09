@@ -21,5 +21,18 @@
         android:id="@+id/fragmentRadioChannels"
         android:name="com.training.radioapptrial.channelsGetViewPlay.ui.FragmentRadioChannels"
         android:label="fragment_radio_channels"
-        tools:layout="@layout/fragment_radio_channels" />
+        tools:layout="@layout/fragment_radio_channels" >
+        <action
+            android:id="@+id/action_fragmentRadioChannels_to_channelDetailFragment"
+            app:destination="@id/channelDetailFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/channelDetailFragment"
+        android:name="com.training.radioapptrial.detailedmediaplayer.ui.ChannelDetailFragment"
+        android:label="fragment_channel_detail"
+        tools:layout="@layout/fragment_channel_detail" />
 </navigation>

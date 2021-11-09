@@ -3,10 +3,15 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/RadioAppTrial/app/src/main/res/drawable/ic_fullscreen_exit_svgrepo_com.xml" value="0.2866666666666667" />
+        <entry key="..\:/RadioAppTrial/app/src/main/res/drawable/ic_pause_svgrepo_com.xml" value="0.2866666666666667" />
+        <entry key="..\:/RadioAppTrial/app/src/main/res/drawable/ic_play_detail_svgrepo_com.xml" value="0.2866666666666667" />
         <entry key="..\:/RadioAppTrial/app/src/main/res/drawable/spinner_bg.xml" value="0.264" />
         <entry key="..\:/RadioAppTrial/app/src/main/res/drawable/spinner_sla.xml" value="0.15989583333333332" />
         <entry key="..\:/RadioAppTrial/app/src/main/res/layout/activity_main.xml" value="0.14990942028985507" />
         <entry key="..\:/RadioAppTrial/app/src/main/res/layout/channel_item.xml" value="0.14990942028985507" />
+        <entry key="..\:/RadioAppTrial/app/src/main/res/layout/detailed_media_player.xml" value="0.21105072463768115" />
+        <entry key="..\:/RadioAppTrial/app/src/main/res/layout/fragment_channel_detail.xml" value="0.21105072463768115" />
         <entry key="..\:/RadioAppTrial/app/src/main/res/layout/fragment_radio_channels.xml" value="0.10400000000000001" />
         <entry key="..\:/RadioAppTrial/app/src/main/res/layout/fragment_radio_splash.xml" value="0.16979166666666667" />
         <entry key="..\:/RadioAppTrial/app/src/main/res/layout/mini_media_player.xml" value="0.21105072463768115" />

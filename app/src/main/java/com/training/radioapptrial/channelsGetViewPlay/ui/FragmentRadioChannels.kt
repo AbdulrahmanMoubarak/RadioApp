@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.training.radioapptrial.R
 import com.training.radioapptrial.channelsGetViewPlay.model.RadioChannelModel
@@ -109,6 +110,12 @@ class FragmentRadioChannels : Fragment() {
     }
 
     private fun onChannelClick(channel: RadioChannelModel) {
+        Bundle().let {
+            it.putSerializable("channel", channel)
+            findNavController().navigate(R.id.action_fragmentRadioChannels_to_channelDetailFragment, it)
+        }
+
+        /*
         if(miniPlayer.visibility == View.INVISIBLE) {
             miniPlayer.visibility = View.VISIBLE
             miniPlayer.animate().translationYBy(-300f).setDuration(300).start()
@@ -116,6 +123,7 @@ class FragmentRadioChannels : Fragment() {
         miniPlayer.loadMedia(channel)
         miniPlayer.play()
         playNewStation(channel)
+         */
     }
 
     private fun pausePlayer() {
