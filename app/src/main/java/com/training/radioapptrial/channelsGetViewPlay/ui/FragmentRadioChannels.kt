@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.media.AudioManagerCompat.requestAudioFocus
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.training.radioapptrial.R
@@ -52,14 +53,13 @@ class FragmentRadioChannels : Fragment() {
         channels_recycler.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             this.adapter = normalRecyclerAdapter
+            //scheduleLayoutAnimation()
         }
         initExoPlayer()
 
         loadChannels()
 
         subscribeGenres()
-
-        requestAudioFocus()
 
         miniPlayer.animate().translationYBy(300f).setDuration(0).start()
         genresSelector.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -69,6 +69,9 @@ class FragmentRadioChannels : Fragment() {
                 normalRecyclerAdapter.submitList(recyclerAdapter.snapshot().items as ArrayList<RadioChannelModel>)
 
                 channels_recycler.adapter = normalRecyclerAdapter
+
+                //if(parent?.getItemAtPosition(p2).toString() != "Genres")
+                    channels_recycler.scheduleLayoutAnimation()
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -110,20 +113,23 @@ class FragmentRadioChannels : Fragment() {
     }
 
     private fun onChannelClick(channel: RadioChannelModel) {
+        /*
         Bundle().let {
             it.putSerializable("channel", channel)
             findNavController().navigate(R.id.action_fragmentRadioChannels_to_channelDetailFragment, it)
         }
 
-        /*
+         */
+
+
         if(miniPlayer.visibility == View.INVISIBLE) {
             miniPlayer.visibility = View.VISIBLE
-            miniPlayer.animate().translationYBy(-300f).setDuration(300).start()
+            miniPlayer.animate().translationYBy(-300f).setDuration(800).start()
         }
         miniPlayer.loadMedia(channel)
         miniPlayer.play()
         playNewStation(channel)
-         */
+        /**/
     }
 
     private fun pausePlayer() {
@@ -152,40 +158,5 @@ class FragmentRadioChannels : Fragment() {
         progress_bar.visibility = if (isDisplayed) View.VISIBLE else View.GONE
     }
 
-    private fun requestAudioFocus() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val am = requireActivity().getSystemService(Context.AUDIO_SERVICE) as AudioManager
-            am.requestAudioFocus(
-                AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
-                    .setAudioAttributes(
-                        AudioAttributes.Builder()
-                            .setUsage(AudioAttributes.USAGE_MEDIA)
-                            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                            .build()
-                    )
-                    .setAcceptsDelayedFocusGain(true)
-                    .setOnAudioFocusChangeListener(addOnAudioFocusChangedListener()).build()
-            )
-        }
-    }
 
-    private fun addOnAudioFocusChangedListener(): OnAudioFocusChangeListener{
-        return OnAudioFocusChangeListener { focusChange ->
-            when (focusChange) {
-                AudioManager.AUDIOFOCUS_GAIN -> {
-                    resumePlayer()
-                }
-                AudioManager.AUDIOFOCUS_GAIN_TRANSIENT -> {
-                    resumePlayer()
-                }
-
-                AudioManager.AUDIOFOCUS_LOSS -> {
-                    pausePlayer()
-                }
-                AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
-                    pausePlayer()
-                }
-            }
-        }
-    }
 }

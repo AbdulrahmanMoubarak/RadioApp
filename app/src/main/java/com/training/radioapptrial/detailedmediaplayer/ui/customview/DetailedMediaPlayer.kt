@@ -32,27 +32,36 @@ class DetailedMediaPlayer @JvmOverloads constructor(
             crossfade(true)
             crossfade(500)
         }
-        viewItem.detail_channelName.text = soundItem.name
+        viewItem.detail_channelName.apply {
+            text = soundItem.name
+            isSelected = true
+        }
         viewItem.detail_buttonPlayPause.setImageResource(R.drawable.ic_play_detail_svgrepo_com)
-        viewItem.detail_genre.text = viewItem.detail_genre.text.toString() + soundItem.genre
-        viewItem.detail_country.text = viewItem.detail_country.text.toString() + soundItem.countryCode
+
+        viewItem.detail_genre.apply {
+            text = soundItem.genre
+            viewItem.detail_genre.isSelected = true
+        }
+
+        viewItem.detail_country.apply {
+            text = text.toString() + soundItem.countryCode
+            isSelected = true
+        }
     }
 
     fun play(){
         if(!isPlaying){
             isPlaying = true
-            viewItem.detail_buttonPlayPause.animate().rotationBy(180f).setDuration(200).start()
-            viewItem.detail_buttonPlayPause.load(R.drawable.ic_pause_detail_svgrepo_com)
-            viewItem.detail_buttonPlayPause.animate().rotationBy(180f).setDuration(200).start()
+            viewItem.detail_buttonPlayPause.animate().rotationBy(360f).setDuration(500).start()
+            viewItem.detail_buttonPlayPause.setImageResource(R.drawable.ic_pause_detail_svgrepo_com)
         }
     }
 
     fun pause(){
         if(isPlaying){
             isPlaying = false
-            viewItem.detail_buttonPlayPause.animate().rotationBy(180f).setDuration(200).start()
-            viewItem.detail_buttonPlayPause.load(R.drawable.ic_play_detail_svgrepo_com)
-            viewItem.detail_buttonPlayPause.animate().rotationBy(180f).setDuration(200).start()
+            viewItem.detail_buttonPlayPause.animate().rotationBy(360f).setDuration(500).start()
+            viewItem.detail_buttonPlayPause.setImageResource(R.drawable.ic_play_detail_svgrepo_com)
         }
     }
 }

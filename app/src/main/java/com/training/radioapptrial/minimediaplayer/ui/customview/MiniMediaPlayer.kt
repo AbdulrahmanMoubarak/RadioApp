@@ -38,18 +38,16 @@ class MiniMediaPlayer @JvmOverloads constructor(
     fun play(){
         if(!isPlaying){
             isPlaying = true
-            viewItem.button_play_pause.animate().rotationBy(180f).setDuration(200).start()
+            viewItem.button_play_pause.animate().rotationBy(360f).setDuration(800).start()
             viewItem.button_play_pause.load(R.drawable.ic_pause_svgrepo_com)
-            viewItem.button_play_pause.animate().rotationBy(180f).setDuration(200).start()
         }
     }
 
     fun pause(){
         if(isPlaying){
             isPlaying = false
-            viewItem.button_play_pause.animate().rotationBy(180f).setDuration(200).start()
+            viewItem.button_play_pause.animate().rotationBy(360f).setDuration(800).start()
             viewItem.button_play_pause.load(R.drawable.ic_play_svgrepo_com)
-            viewItem.button_play_pause.animate().rotationBy(180f).setDuration(200).start()
         }
     }
 }
