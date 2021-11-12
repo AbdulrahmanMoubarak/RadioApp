@@ -22,7 +22,7 @@ import javax.inject.Inject
 private const val SERVICE_TAG = "RadioService"
 
 @AndroidEntryPoint
-class RadioService(): MediaBrowserServiceCompat() {
+class RadioService: MediaBrowserServiceCompat() {
 
     companion object{
         var currentChannel: RadioChannelModel? = null

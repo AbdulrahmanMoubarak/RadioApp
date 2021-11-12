@@ -5,6 +5,7 @@ import android.media.AudioAttributes
 import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.media.AudioManager.OnAudioFocusChangeListener
+import android.media.session.PlaybackState
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -24,6 +25,7 @@ import com.training.radioapptrial.R
 import com.training.radioapptrial.channelsGetViewPlay.model.RadioChannelModel
 import com.training.radioapptrial.channelsGetViewPlay.ui.adapter.ChannelAdapter
 import com.training.radioapptrial.channelsGetViewPlay.ui.paging.StationsPagingSource
+import com.training.radioapptrial.channelsGetViewPlay.util.PlayerStates
 import com.training.radioapptrial.channelsGetViewPlay.viewmodel.MediaViewModel
 import com.training.radioapptrial.channelsGetViewPlay.viewmodel.NetworkViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -61,12 +63,11 @@ class FragmentRadioChannels : Fragment() {
             //scheduleLayoutAnimation()
         }
 
-        initExoPlayer()
-
         loadChannels()
 
         subscribeGenres()
 
+        subscribePlayerState()
 
         miniPlayer.animate().translationYBy(300f).setDuration(0).start()
         genresSelector.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -113,10 +114,6 @@ class FragmentRadioChannels : Fragment() {
         }
     }
 
-    private fun initExoPlayer() {
-        mediaViewModel.setPlayerEvents(::onPlayerError, ::displayProgressbar)
-    }
-
     private fun playNewStation(channel: RadioChannelModel) {
         mediaViewModel.playNewStation(channel)
     }
@@ -158,16 +155,33 @@ class FragmentRadioChannels : Fragment() {
     private fun onPlayerError(){
         mediaViewModel.isPlaying = false
         mediaViewModel.isFailure = true
+        displayProgressbar(false)
         miniPlayer.pause()
         Toast.makeText(requireContext(), "Error playing the channel", Toast.LENGTH_SHORT).show()
     }
 
     private fun displayProgressbar(isDisplayed: Boolean) {
-        //miniPlayer.pause()
         if(progress_bar != null) {
             progress_bar.visibility = if (isDisplayed) View.VISIBLE else View.GONE
         }
     }
 
+    private fun subscribePlayerState(){
+        mediaViewModel.playerState.observe(requireActivity()){
+            when(it) {
+                PlaybackState.STATE_ERROR ->{
+                    onPlayerError()
+                }
+
+                PlaybackState.STATE_BUFFERING ->{
+                    displayProgressbar(true)
+                }
+
+                PlaybackState.STATE_PLAYING ->{
+                    displayProgressbar(false)
+                }
+            }
+        }
+    }
 
 }

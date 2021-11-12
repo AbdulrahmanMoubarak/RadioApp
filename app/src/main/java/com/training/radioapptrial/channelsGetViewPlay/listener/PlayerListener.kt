@@ -1,33 +1,28 @@
 package com.training.radioapptrial.channelsGetViewPlay.listener
 
 import android.media.session.PlaybackState
-import android.util.Log
 import com.google.android.exoplayer2.PlaybackException
 import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.audio.AudioAttributes
 
 class PlayerListener(
-    val onErrorEvent: () -> Unit = {},
-    val onLoadingEvent: (Boolean) -> Unit = {}
+    val emitState: (Int) -> Unit
 ): Player.Listener {
 
-    override fun onPlayerError(error: PlaybackException) {
-        onLoadingEvent(false)
-        onErrorEvent()
+    override fun onIsPlayingChanged(isPlaying: Boolean) {
+        if(isPlaying){
+            emitState(PlaybackState.STATE_PLAYING)
+        }
     }
 
-    override fun onPlaybackStateChanged(playbackState: Int) {
-        super.onPlaybackStateChanged(playbackState)
-        if(playbackState == PlaybackState.STATE_BUFFERING){
-            onLoadingEvent(true)
-        } else if(playbackState == PlaybackState.STATE_PLAYING){
-            onLoadingEvent(false)
-        }
+    override fun onPlayerError(error: PlaybackException) {
+        super.onPlayerError(error)
+        emitState(PlaybackState.STATE_ERROR)
     }
 
     override fun onIsLoadingChanged(isLoading: Boolean) {
         super.onIsLoadingChanged(isLoading)
-        onLoadingEvent(isLoading)
+        if(isLoading){
+            emitState(PlaybackState.STATE_BUFFERING)
+        }
     }
-
 }
