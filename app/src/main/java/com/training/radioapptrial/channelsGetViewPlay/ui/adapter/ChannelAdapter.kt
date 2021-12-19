@@ -39,7 +39,7 @@ class ChannelAdapter() : PagingDataAdapter<RadioChannelModel, ChannelAdapter.Cha
     override fun onBindViewHolder(holder: ChannelViewHolder, position: Int) {
     }
 
-    inner class NormalRecyclerAdapter(val onChannelClick: (channel: RadioChannelModel) -> Unit = {}, val loading: (Boolean) -> Unit = {}): RecyclerView.Adapter<ChannelViewHolder>(){
+    inner class NormalRecyclerAdapter(val onChannelClick: (channel: RadioChannelModel, replay: Boolean) -> Unit , val loading: (Boolean) -> Unit = {}): RecyclerView.Adapter<ChannelViewHolder>(){
         var selectedFilter = "Genres"
         private var Item_List = ArrayList<RadioChannelModel>()
 
@@ -58,7 +58,7 @@ class ChannelAdapter() : PagingDataAdapter<RadioChannelModel, ChannelAdapter.Cha
             }
 
             holder.itemView.setOnClickListener {
-                onChannelClick(Item_List.get(position))
+                onChannelClick(Item_List.get(position), true)
             }
         }
 

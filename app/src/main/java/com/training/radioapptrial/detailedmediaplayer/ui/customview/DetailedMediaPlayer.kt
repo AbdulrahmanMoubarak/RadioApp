@@ -1,10 +1,12 @@
 package com.training.radioapptrial.detailedmediaplayer.ui.customview
 
 import android.content.Context
+import android.os.Bundle
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.navigation.findNavController
 import coil.load
 import com.training.radioapptrial.R
 import com.training.radioapptrial.channelsGetViewPlay.model.RadioChannelModel
@@ -18,15 +20,17 @@ class DetailedMediaPlayer @JvmOverloads constructor(
 
     private var viewItem: View
     var playPauseButton: ImageView
-    private var isPlaying = false
+    var recordButton: ImageView
+    private var isPlaying = true
 
     init {
         viewItem = inflate(getContext(), R.layout.detailed_media_player, this)
         playPauseButton = viewItem.detail_buttonPlayPause
+        recordButton = viewItem.channel_record
     }
 
     fun loadMedia(soundItem: RadioChannelModel){
-        isPlaying = false
+        isPlaying = true
 
         viewItem.imageViewDetailedSound.load(soundItem.image_url){
             crossfade(true)
@@ -36,7 +40,7 @@ class DetailedMediaPlayer @JvmOverloads constructor(
             text = soundItem.name
             isSelected = true
         }
-        viewItem.detail_buttonPlayPause.setImageResource(R.drawable.ic_play_detail_svgrepo_com)
+        viewItem.detail_buttonPlayPause.setImageResource(R.drawable.ic_pause_detail_svgrepo_com)
 
         viewItem.detail_genre.apply {
             text = soundItem.genre
@@ -64,4 +68,5 @@ class DetailedMediaPlayer @JvmOverloads constructor(
             viewItem.detail_buttonPlayPause.setImageResource(R.drawable.ic_play_detail_svgrepo_com)
         }
     }
+
 }

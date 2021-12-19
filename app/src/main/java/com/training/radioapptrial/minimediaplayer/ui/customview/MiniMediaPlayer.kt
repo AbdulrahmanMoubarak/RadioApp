@@ -18,11 +18,13 @@ class MiniMediaPlayer @JvmOverloads constructor(
 
     private var viewItem: View
     var playPauseButton: ImageView
+    var body: ConstraintLayout
     private var isPlaying = false
 
     init {
         viewItem = inflate(getContext(), R.layout.mini_media_player, this)
         playPauseButton = viewItem.button_play_pause
+        body = viewItem.miniplayer_background
     }
 
     fun loadMedia(soundItem: SoundItem){

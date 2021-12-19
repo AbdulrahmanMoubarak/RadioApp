@@ -1,13 +1,8 @@
 package com.training.radioapptrial.channelsGetViewPlay.ui
 
-import android.content.Context
-import android.media.AudioAttributes
-import android.media.AudioFocusRequest
-import android.media.AudioManager
-import android.media.AudioManager.OnAudioFocusChangeListener
 import android.media.session.PlaybackState
-import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,19 +13,16 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.media.AudioManagerCompat.requestAudioFocus
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.training.radioapptrial.R
 import com.training.radioapptrial.channelsGetViewPlay.model.RadioChannelModel
 import com.training.radioapptrial.channelsGetViewPlay.ui.adapter.ChannelAdapter
 import com.training.radioapptrial.channelsGetViewPlay.ui.paging.StationsPagingSource
-import com.training.radioapptrial.channelsGetViewPlay.util.PlayerStates
 import com.training.radioapptrial.channelsGetViewPlay.viewmodel.MediaViewModel
 import com.training.radioapptrial.channelsGetViewPlay.viewmodel.NetworkViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_radio_channels.*
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -42,7 +34,7 @@ class FragmentRadioChannels : Fragment() {
     var animTime = 0
 
     private var recyclerAdapter = ChannelAdapter()
-    val normalRecyclerAdapter = recyclerAdapter.NormalRecyclerAdapter(::onChannelClick, ::displayProgressbar)
+    val normalRecyclerAdapter = recyclerAdapter.NormalRecyclerAdapter(::playDetailedPlayer, ::displayProgressbar)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,8 +46,10 @@ class FragmentRadioChannels : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        displayProgressbar(true)
         super.onViewCreated(view, savedInstanceState)
+
+        displayProgressbar(true)
+
         channels_recycler.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             this.adapter = normalRecyclerAdapter
@@ -95,6 +89,29 @@ class FragmentRadioChannels : Fragment() {
                 resumePlayer()
             }
         }
+
+
+
+        arguments?.let {
+            val channel = it.getSerializable("played_channel") as RadioChannelModel
+            viewMiniPlayer(channel)
+            miniPlayer.body.setOnClickListener {
+                playDetailedPlayer(channel, false)
+                Log.d("here", "onViewCreated: onclick listener has been set")
+            }
+        }
+
+    }
+
+    private fun viewMiniPlayer(channel: RadioChannelModel){
+
+            if(miniPlayer.visibility == View.INVISIBLE) {
+                miniPlayer.visibility = View.VISIBLE
+                miniPlayer.animate().translationYBy(-300f).setDuration(800).start()
+            }
+            miniPlayer.loadMedia(channel)
+            miniPlayer.play()
+
     }
 
     private fun loadChannels() {
@@ -110,32 +127,19 @@ class FragmentRadioChannels : Fragment() {
         StationsPagingSource.genresLiveData.observe(requireActivity()) {
             val adapter = ArrayAdapter(requireContext(), R.layout.spinner_item_selected, it)
             adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
-            genresSelector.adapter = adapter
+            if(genresSelector != null) {
+                genresSelector.adapter = adapter
+            }
         }
     }
 
-    private fun playNewStation(channel: RadioChannelModel) {
-        mediaViewModel.playNewStation(channel)
-    }
+    private fun playDetailedPlayer(channel: RadioChannelModel, replay: Boolean) {
 
-    private fun onChannelClick(channel: RadioChannelModel) {
-        /*
         Bundle().let {
-            it.putSerializable("channel", channel)
+            it.putSerializable("played_channel", channel)
+            it.putBoolean("replay", replay)
             findNavController().navigate(R.id.action_fragmentRadioChannels_to_channelDetailFragment, it)
         }
-
-         */
-
-
-        if(miniPlayer.visibility == View.INVISIBLE) {
-            miniPlayer.visibility = View.VISIBLE
-            miniPlayer.animate().translationYBy(-300f).setDuration(800).start()
-        }
-        miniPlayer.loadMedia(channel)
-        miniPlayer.play()
-        playNewStation(channel)
-        /**/
     }
 
     private fun pausePlayer() {
@@ -184,4 +188,9 @@ class FragmentRadioChannels : Fragment() {
         }
     }
 
+
+    override fun onDestroy() {
+        super.onDestroy()
+        //mediaViewModel.stopService()
+    }
 }

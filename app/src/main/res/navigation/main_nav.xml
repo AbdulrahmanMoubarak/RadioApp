@@ -34,5 +34,16 @@
         android:id="@+id/channelDetailFragment"
         android:name="com.training.radioapptrial.detailedmediaplayer.ui.ChannelDetailFragment"
         android:label="fragment_channel_detail"
-        tools:layout="@layout/fragment_channel_detail" />
+        tools:layout="@layout/fragment_channel_detail" >
+        <action
+            android:id="@+id/action_channelDetailFragment_to_fragmentRadioChannels"
+            app:destination="@id/fragmentRadioChannels"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:launchSingleTop="true"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out"
+            app:popUpTo="@id/channelDetailFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>

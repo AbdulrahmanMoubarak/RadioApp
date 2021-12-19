@@ -1,79 +1,76 @@
 package com.training.radioapptrial.radioforegroundservice.service
 
+import android.annotation.SuppressLint
+import android.app.Notification
 import android.app.PendingIntent
-import android.net.Uri
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
-import android.support.v4.media.session.MediaSessionCompat
+import androidx.annotation.RequiresApi
 import androidx.media.MediaBrowserServiceCompat
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
-import com.training.radioapptrial.channelsGetViewPlay.factory.MediaSourceAbstractFactory
 import com.training.radioapptrial.channelsGetViewPlay.model.RadioChannelModel
-import com.training.radioapptrial.radioforegroundservice.exoplayer.RadioNotificationManager
-import com.training.radioapptrial.radioforegroundservice.exoplayer.callback.RadioPlayerNotificationListener
+import com.training.radioapptrial.channelsGetViewPlay.ui.MainActivity
+import com.training.radioapptrial.radioforegroundservice.exoplayer.PlayerNotificationManager
+import com.training.radioapptrial.radioforegroundservice.util.Constants.CHANNEL_ID
+import com.training.radioapptrial.radioforegroundservice.util.Constants.CHANNEL_NAME
+import com.training.radioapptrial.radioforegroundservice.util.Constants.NOTIFICATION_ID
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
-import javax.inject.Inject
 
 private const val SERVICE_TAG = "RadioService"
 
 @AndroidEntryPoint
-class RadioService: MediaBrowserServiceCompat() {
+class RadioService : MediaBrowserServiceCompat() {
 
-    companion object{
-        var currentChannel: RadioChannelModel? = null
+    lateinit var channel: RadioChannelModel
+
+    private val job = Job()
+    private val serviceScope = CoroutineScope(Dispatchers.Main + job)
+
+    //MediaSession
+    //private lateinit var mediaSessionCompat:MediaSessionCompat
+    //private lateinit var mediaSessionConnector: MediaSessionConnector
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    @SuppressLint("UnspecifiedImmutableFlag")
+    private fun startForegroundService(message: String) {
+
+        val notificationIntent = Intent(this, MainActivity::class.java)
+        notificationIntent.putExtra("played_channel", channel)
+
+
+        //val uniqueInt = (System.currentTimeMillis() and 0xfffffff).toInt()
+
+        val pendingIntent = PendingIntent.getActivity(
+            this,
+            NOTIFICATION_ID, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+
+        val notificationBuilder =
+            PlayerNotificationManager.makeStatusNotification(message, pendingIntent, this, CHANNEL_ID, CHANNEL_NAME)
+
+        startForeground(NOTIFICATION_ID, notificationBuilder.build())
     }
 
-    @Inject
-    lateinit var mediaSourceAbstractFactory: MediaSourceAbstractFactory
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        super.onStartCommand(intent, flags, startId)
 
-    @Inject
-    lateinit var exoplayer: ExoPlayer
-
-    private lateinit var radionNotificationManager: RadioNotificationManager
-
-    val serviceJob = Job()
-    val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
-
-    private lateinit var mediaSession: MediaSessionCompat
-    private lateinit var mediaSessionConnector: MediaSessionConnector
-
-    var isForegroundService = false
-
-
-    override fun onCreate() {
-        super.onCreate()
-        val activityIntent = packageManager?.getLaunchIntentForPackage(packageName)?.let {
-            PendingIntent.getActivity(this, 0, it, 0)
-        }
-        mediaSession = MediaSessionCompat(this, SERVICE_TAG).apply {
-            setSessionActivity(activityIntent)
-            isActive = true
+        intent?.getSerializableExtra("played_channel")?.let {
+            channel = it as RadioChannelModel
         }
 
-        sessionToken = mediaSession.sessionToken
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            startForegroundService(channel.name)
+        else
+            startForeground(2, Notification())
 
-        radionNotificationManager = RadioNotificationManager(this, mediaSession.sessionToken, RadioPlayerNotificationListener(this))
-
-        mediaSessionConnector = MediaSessionConnector(mediaSession)
-        mediaSessionConnector.setPlayer(exoplayer)
-    }
-
-    private fun preparePlayer(){
-        currentChannel?.let {
-            exoplayer.setMediaSource(
-                mediaSourceAbstractFactory.getMediaSourceFactoy(
-                    Uri.parse(
-                        it.uri
-                    )
-                )
-            )
-            exoplayer.prepare()
-        }
+        return START_NOT_STICKY
     }
 
     override fun onGetRoot(
@@ -81,15 +78,14 @@ class RadioService: MediaBrowserServiceCompat() {
         clientUid: Int,
         rootHints: Bundle?
     ): BrowserRoot? {
-        return null
+        return BrowserRoot("root", rootHints)
     }
-
 
     override fun onLoadChildren(
         parentId: String,
         result: Result<MutableList<MediaBrowserCompat.MediaItem>>
     ) {
-
+        TODO("Not yet implemented")
     }
 
     override fun onDestroy() {

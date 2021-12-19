@@ -4,6 +4,8 @@
 
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <application
         android:name=".application.MainApplication"
         android:allowBackup="true"
@@ -13,6 +15,25 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.RadioAppTrial">
+
+        <service android:name=".radioforegroundservice.service.RadioService"
+            android:enabled="true"
+            android:exported="true"/>
+
+        <service android:name=".channelrecorder.service.ChannelRecordingService"
+            android:enabled="true"
+            android:exported="true"/>
+
+        <receiver
+            android:name=".channelrecorder.service.ChannelRecordBroadcastReciever"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="STOP_SERVICE"/>
+                <action android:name="START_SERVICE"/>
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name=".channelsGetViewPlay.ui.MainActivity"
             android:screenOrientation="portrait"

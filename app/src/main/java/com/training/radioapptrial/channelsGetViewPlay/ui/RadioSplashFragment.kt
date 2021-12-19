@@ -10,10 +10,14 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import coil.load
 import com.training.radioapptrial.R
+import com.training.radioapptrial.channelsGetViewPlay.model.RadioChannelModel
 import kotlinx.android.synthetic.main.fragment_radio_splash.view.*
+import java.lang.Exception
 
 
 class RadioSplashFragment : Fragment() {
+
+    var channel: RadioChannelModel? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -21,6 +25,11 @@ class RadioSplashFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_radio_splash, container, false)
+
+        requireActivity().intent?.getSerializableExtra("played_channel")?.let {
+            channel = it as RadioChannelModel
+        }
+
         view.imageSplash.apply {
             load(R.drawable.ic_radio_svgrepo_com) {
                 crossfade(true)
@@ -30,7 +39,14 @@ class RadioSplashFragment : Fragment() {
         }
         Handler(Looper.getMainLooper())
             .postDelayed({
-                findNavController().navigate(R.id.action_radioSplashFragment_to_fragmentRadioChannels)
+                if(channel != null) {
+                    findNavController().navigate(
+                        R.id.action_radioSplashFragment_to_fragmentRadioChannels,
+                        Bundle().apply { putSerializable("played_channel", channel) }
+                    )
+                }else{
+                    findNavController().navigate(R.id.action_radioSplashFragment_to_fragmentRadioChannels)
+                }
             }, 2500)
         return view
     }
