@@ -21,6 +21,7 @@ import androidx.fragment.app.DialogFragment
 import com.training.radioapptrial.R
 import com.training.radioapptrial.application.MainApplication
 import com.training.radioapptrial.channelrecorder.service.ChannelRecordBroadcastReciever
+import com.training.radioapptrial.channelrecorder.util.RecordDialogInputManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_record_time_dialog.view.*
 
@@ -40,23 +41,14 @@ class RecordTimeDialogFragment(var onConfirm: (Calendar, Int) -> Unit) : DialogF
         builder.setView(view).setTitle(getString(R.string.pickRecordTime))
             .setNegativeButton(getString(R.string.cancle)) { dialogInterface, i ->
             }.setPositiveButton(R.string.confirm) { dialogInterface, i ->
-                if (view.editTextStart.text.toString() == "" || view.editTextDuration.text.toString() == "")
-                    Toast.makeText(
-                        MainApplication.getAppContext(),
-                        "You have to set both start time and duration",
-                        Toast.LENGTH_SHORT
-                    ).show()
 
-                else if (view.editTextDuration.text.toString().toInt() > 120) {
-                    Toast.makeText(
-                        MainApplication.getAppContext(),
-                        "Duration must be less than 120 minutes",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                duration = RecordDialogInputManager().validateDialogInput(
+                    view.editTextStart.text.toString() ,
+                    view.editTextDuration.text.toString()
+                )
 
-                } else {
+                if(duration > 0) {
                     duration = view.editTextDuration.text.toString().toInt()
-
                     onConfirm(startRecordingTime, duration)
                 }
             }
@@ -64,8 +56,8 @@ class RecordTimeDialogFragment(var onConfirm: (Calendar, Int) -> Unit) : DialogF
             val timepicker = TimePickerDialog(
                 requireActivity(),
                 { timePicker, hour, min ->
-                    var minStr = if (min < 10) "0${min}" else min.toString()
-                    view.editTextStart.setText("${hour}:${minStr}")
+
+                    view.editTextStart.setText(RecordDialogInputManager().convertClockToText(hour, min))
 
                     startRecordingTime.set(
                         Calendar.HOUR_OF_DAY, hour

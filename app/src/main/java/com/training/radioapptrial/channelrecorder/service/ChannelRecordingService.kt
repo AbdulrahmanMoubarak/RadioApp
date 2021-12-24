@@ -9,12 +9,13 @@ import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import androidx.annotation.RequiresApi
-import com.training.radioapptrial.channelrecorder.utils.AudioFileBuilder
-import com.training.radioapptrial.channelrecorder.utils.Constants.NOTIFICATION_MESSAGE
-import com.training.radioapptrial.channelrecorder.utils.Constants.RECORD_CHANNEL_ID
-import com.training.radioapptrial.channelrecorder.utils.Constants.RECORD_CHANNEL_NAME
-import com.training.radioapptrial.channelrecorder.utils.Constants.RECORD_NOTIFICATION_ID
-import com.training.radioapptrial.channelsGetViewPlay.model.RadioChannelModel
+import com.training.radioapptrial.channelrecorder.roomdb.model.ChannelRecordingAlarmModel
+import com.training.radioapptrial.channelrecorder.util.AudioFileBuilder
+import com.training.radioapptrial.channelrecorder.util.Constants.NOTIFICATION_MESSAGE
+import com.training.radioapptrial.channelrecorder.util.Constants.RECORDING_NOTIFICATION_TITLE
+import com.training.radioapptrial.channelrecorder.util.Constants.RECORD_CHANNEL_ID
+import com.training.radioapptrial.channelrecorder.util.Constants.RECORD_CHANNEL_NAME
+import com.training.radioapptrial.channelrecorder.util.Constants.RECORD_NOTIFICATION_ID
 import com.training.radioapptrial.channelsGetViewPlay.ui.MainActivity
 import com.training.radioapptrial.radioforegroundservice.exoplayer.PlayerNotificationManager
 import kotlinx.coroutines.*
@@ -24,7 +25,7 @@ import java.io.IOException
 
 class ChannelRecordingService: Service() {
 
-    lateinit var channel: RadioChannelModel
+    lateinit var recording: ChannelRecordingAlarmModel
     var streamBytes = mutableListOf<Byte>()
 
 
@@ -51,11 +52,14 @@ class ChannelRecordingService: Service() {
 
 
         val notificationBuilder =
-            PlayerNotificationManager.makeStatusNotification(NOTIFICATION_MESSAGE, pendingIntent, this, RECORD_CHANNEL_ID, RECORD_CHANNEL_NAME)
-
-        serviceScope.launch {
-
-        }
+            PlayerNotificationManager.makeStatusNotification(
+                NOTIFICATION_MESSAGE,
+                pendingIntent,
+                this,
+                RECORD_CHANNEL_ID,
+                RECORD_CHANNEL_NAME,
+                RECORDING_NOTIFICATION_TITLE
+            )
 
         startForeground(RECORD_NOTIFICATION_ID, notificationBuilder.build())
     }
@@ -66,7 +70,7 @@ class ChannelRecordingService: Service() {
 
         super.onStartCommand(intent, flags, startId)
 
-        channel = intent?.getSerializableExtra("played_channel") as RadioChannelModel
+        recording = intent?.getSerializableExtra("recording") as ChannelRecordingAlarmModel
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             startForegroundService()
@@ -80,14 +84,6 @@ class ChannelRecordingService: Service() {
         super.onDestroy()
         serviceScope.cancel()
         AudioFileBuilder.writeToFile(applicationContext, streamBytes.toByteArray())
-
-        val notificationIntent = Intent()
-        val pendingIntent = PendingIntent.getActivity(
-            this,
-            RECORD_NOTIFICATION_ID, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT
-        )
-        val notificationBuilder =
-            PlayerNotificationManager.makeStatusNotification(NOTIFICATION_MESSAGE, pendingIntent, this, RECORD_CHANNEL_ID, RECORD_CHANNEL_NAME)
     }
 
     override fun onBind(p0: Intent?): IBinder? {
@@ -98,7 +94,7 @@ class ChannelRecordingService: Service() {
         val client = OkHttpClient()
 
         val request = Request.Builder()
-            .url(channel.uri)
+            .url(recording.channel_url)
             .header("Content-type", "application/octet-stream")
             .build()
 

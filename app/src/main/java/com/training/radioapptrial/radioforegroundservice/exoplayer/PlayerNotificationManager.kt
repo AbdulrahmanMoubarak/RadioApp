@@ -15,7 +15,7 @@ import com.training.radioapptrial.radioforegroundservice.util.Constants.VERBOSE_
 object PlayerNotificationManager {
 
     fun makeStatusNotification(
-        message: String, pendingIntent: PendingIntent, context: Context, channel_id: String, channel_name: String
+        message: String, pendingIntent: PendingIntent, context: Context, channel_id: String, channel_name: String, title: String
     )
     :NotificationCompat.Builder {
         // Make a channel if necessary
@@ -38,14 +38,14 @@ object PlayerNotificationManager {
         // Create the notification
         val builder = NotificationCompat.Builder(context, channel_id)
             .setSmallIcon(R.drawable.ic_radio_svgrepo_com)
-            .setContentTitle(NOTIFICATION_TITLE)
+            .setContentTitle(title)
             .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setVibrate(null)
             .setSilent(true)
 
 
-        pendingIntent?.let {
+        pendingIntent.let {
             builder.setContentIntent(pendingIntent)
         }
 

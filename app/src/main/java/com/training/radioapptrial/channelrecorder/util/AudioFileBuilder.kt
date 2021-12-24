@@ -1,9 +1,9 @@
-package com.training.radioapptrial.channelrecorder.utils
+package com.training.radioapptrial.channelrecorder.util
 
 import android.content.Context
 import android.net.Uri
 import android.util.Log
-import com.training.radioapptrial.channelrecorder.utils.Constants.OUTPUT_PATH
+import com.training.radioapptrial.channelrecorder.util.Constants.OUTPUT_PATH
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream

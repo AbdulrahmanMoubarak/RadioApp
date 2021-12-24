@@ -7,7 +7,8 @@ object Constants {
     const val CHANNEL_ID = "RaidoChannel01"
     const val VERBOSE_NOTIFICATION_CHANNEL_NAME =""
     const val VERBOSE_NOTIFICATION_CHANNEL_DESCRIPTION=""
-    const val NOTIFICATION_TITLE="Radio App"
+    const val NOTIFICATION_TITLE="Playing"
+
 
 
 }

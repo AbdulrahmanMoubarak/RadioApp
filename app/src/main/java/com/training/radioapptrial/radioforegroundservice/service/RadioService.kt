@@ -15,6 +15,7 @@ import com.training.radioapptrial.radioforegroundservice.exoplayer.PlayerNotific
 import com.training.radioapptrial.radioforegroundservice.util.Constants.CHANNEL_ID
 import com.training.radioapptrial.radioforegroundservice.util.Constants.CHANNEL_NAME
 import com.training.radioapptrial.radioforegroundservice.util.Constants.NOTIFICATION_ID
+import com.training.radioapptrial.radioforegroundservice.util.Constants.NOTIFICATION_TITLE
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -53,7 +54,7 @@ class RadioService : MediaBrowserServiceCompat() {
 
 
         val notificationBuilder =
-            PlayerNotificationManager.makeStatusNotification(message, pendingIntent, this, CHANNEL_ID, CHANNEL_NAME)
+            PlayerNotificationManager.makeStatusNotification(message, pendingIntent, this, CHANNEL_ID, CHANNEL_NAME, NOTIFICATION_TITLE)
 
         startForeground(NOTIFICATION_ID, notificationBuilder.build())
     }
@@ -68,7 +69,7 @@ class RadioService : MediaBrowserServiceCompat() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             startForegroundService(channel.name)
         else
-            startForeground(2, Notification())
+            startForeground(NOTIFICATION_ID, Notification())
 
         return START_NOT_STICKY
     }
