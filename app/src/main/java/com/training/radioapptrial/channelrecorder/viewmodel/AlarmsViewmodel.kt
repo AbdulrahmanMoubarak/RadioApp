@@ -64,17 +64,20 @@ constructor() : ViewModel() {
                         alarm?.setExactAndAllowWhileIdle(
                             AlarmManager.RTC_WAKEUP,
                             calendar.timeInMillis,
+                            //AlarmManager.INTERVAL_DAY,
                             startPendingIntent
                         )
 
 
 
                         calendar.add(Calendar.MINUTE, duration)
+                        //calendar.add(Calendar.SECOND, 15)  //for testing
 
 
                         alarm?.setExactAndAllowWhileIdle(
                             AlarmManager.RTC_WAKEUP,
                             calendar.timeInMillis,
+                            //AlarmManager.INTERVAL_DAY,
                             stopPendingIntent
                         )
 

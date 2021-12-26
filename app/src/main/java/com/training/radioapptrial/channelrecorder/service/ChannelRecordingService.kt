@@ -9,6 +9,8 @@ import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import androidx.annotation.RequiresApi
+import com.training.radioapptrial.application.MainApplication
+import com.training.radioapptrial.channelrecorder.roomdb.RecordingAlarmsDatabase
 import com.training.radioapptrial.channelrecorder.roomdb.model.ChannelRecordingAlarmModel
 import com.training.radioapptrial.channelrecorder.util.AudioFileBuilder
 import com.training.radioapptrial.channelrecorder.util.Constants.NOTIFICATION_MESSAGE
@@ -16,18 +18,22 @@ import com.training.radioapptrial.channelrecorder.util.Constants.RECORDING_NOTIF
 import com.training.radioapptrial.channelrecorder.util.Constants.RECORD_CHANNEL_ID
 import com.training.radioapptrial.channelrecorder.util.Constants.RECORD_CHANNEL_NAME
 import com.training.radioapptrial.channelrecorder.util.Constants.RECORD_NOTIFICATION_ID
+import com.training.radioapptrial.channelrecorder.util.NetworkStateObserver
+import com.training.radioapptrial.channelrecorder.util.StreamDownloader
 import com.training.radioapptrial.channelsGetViewPlay.ui.MainActivity
 import com.training.radioapptrial.radioforegroundservice.exoplayer.PlayerNotificationManager
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collect
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.io.IOException
+import java.net.SocketTimeoutException
 
-class ChannelRecordingService: Service() {
+class ChannelRecordingService : Service() {
 
     lateinit var recording: ChannelRecordingAlarmModel
     var streamBytes = mutableListOf<Byte>()
-
+    var successful = true
 
     private val job = Job()
     private val serviceScope = CoroutineScope(Dispatchers.IO + job)
@@ -36,12 +42,7 @@ class ChannelRecordingService: Service() {
     @SuppressLint("UnspecifiedImmutableFlag")
     private fun startForegroundService() {
 
-
-        serviceScope.launch {
-            downloadStream()
-        }
-
-
+        downloadStream()
 
         val notificationIntent = Intent(this, MainActivity::class.java)
 
@@ -66,7 +67,7 @@ class ChannelRecordingService: Service() {
 
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.i("here"," RecordService: onStartCommand() is called ")
+        Log.i("here", " RecordService: onStartCommand() is called ")
 
         super.onStartCommand(intent, flags, startId)
 
@@ -83,33 +84,53 @@ class ChannelRecordingService: Service() {
     override fun onDestroy() {
         super.onDestroy()
         serviceScope.cancel()
-        AudioFileBuilder.writeToFile(applicationContext, streamBytes.toByteArray())
+        if (successful) {
+            MainApplication.getAppContext()?.let {
+                PlayerNotificationManager.createImmediateNotification(
+                    it,
+                    "Finished recording",
+                    "Record saved successfully"
+                )
+            }
+            AudioFileBuilder.writeToFile(applicationContext, streamBytes.toByteArray())
+        }
     }
 
     override fun onBind(p0: Intent?): IBinder? {
         TODO("Not yet implemented")
     }
 
-    private suspend fun downloadStream() {
-        val client = OkHttpClient()
+    private fun downloadStream() {
+        val streamDownloader = StreamDownloader()
 
         val request = Request.Builder()
             .url(recording.channel_url)
             .header("Content-type", "application/octet-stream")
             .build()
 
-        client.newCall(request).execute().use { response ->
-            if (!response.isSuccessful) throw IOException("Unexpected code $response")
-
-            while (!response.body!!.source().exhausted()) {
-                val byteArray = ByteArray(8192)
-                val count2 = response.body!!.source().read(byteArray)
-
-                for(i in 0.. (count2-1)){
-                    streamBytes.add(byteArray[i])
+        try {
+            serviceScope.launch {
+                streamDownloader.startDownloadingStream(request).collect {
+                    saveByteArrayToRecordList(it)
                 }
             }
+        } catch (e: SocketTimeoutException) {
+            successful = false
+            MainApplication.getAppContext()?.let {
+                PlayerNotificationManager.createImmediateNotification(
+                    it,
+                    "Recording inturrupted",
+                    "Network connection timed out"
+                )
+            }
+            stopSelf()
+        }
+    }
 
+    private fun saveByteArrayToRecordList(byteArray: ByteArray) {
+        val iterator = byteArray.iterator()
+        while (iterator.hasNext()) {
+            streamBytes.add(iterator.next())
         }
     }
 }
