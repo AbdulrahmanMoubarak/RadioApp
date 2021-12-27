@@ -1,5 +1,6 @@
 package com.training.radioapptrial.channelsGetViewPlay.ui
 
+import android.content.Intent
 import android.media.session.PlaybackState
 import android.os.Bundle
 import android.util.Log
@@ -21,6 +22,7 @@ import com.training.radioapptrial.channelsGetViewPlay.ui.adapter.ChannelAdapter
 import com.training.radioapptrial.channelsGetViewPlay.ui.paging.StationsPagingSource
 import com.training.radioapptrial.channelsGetViewPlay.viewmodel.MediaViewModel
 import com.training.radioapptrial.channelsGetViewPlay.viewmodel.NetworkViewModel
+import com.training.radioapptrial.recordplayer.ui.RecordListActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_radio_channels.*
 import kotlinx.coroutines.flow.collect
@@ -98,6 +100,13 @@ class FragmentRadioChannels : Fragment() {
             miniPlayer.body.setOnClickListener {
                 playDetailedPlayer(channel, false)
                 Log.d("here", "onViewCreated: onclick listener has been set")
+            }
+        }
+
+        toRecordsButton.setOnClickListener {
+            pausePlayer()
+            Intent(requireActivity() ,RecordListActivity::class.java).apply {
+                startActivity(this)
             }
         }
 

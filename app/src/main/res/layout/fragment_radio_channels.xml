@@ -31,6 +31,16 @@
         app:layout_constraintTop_toBottomOf="@+id/textViewChennels"
         app:layout_constraintVertical_bias="0.005" />
 
+    <ImageView
+        android:id="@+id/toRecordsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_record_disc_svgrepo_com"
+        android:layout_margin="10dp"
+        app:layout_constraintEnd_toStartOf="@+id/genresSelector"
+        app:layout_constraintStart_toEndOf="@+id/textViewChennels"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <Spinner
         android:id="@+id/genresSelector"
         android:layout_margin="10sp"

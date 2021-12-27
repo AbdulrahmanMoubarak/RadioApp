@@ -1,5 +1,6 @@
 package com.training.radioapptrial.channelsGetViewPlay.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -11,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import coil.load
 import com.training.radioapptrial.R
 import com.training.radioapptrial.channelsGetViewPlay.model.RadioChannelModel
+import com.training.radioapptrial.recordplayer.ui.RecordListActivity
 import kotlinx.android.synthetic.main.fragment_radio_splash.view.*
 import java.lang.Exception
 
@@ -39,6 +41,7 @@ class RadioSplashFragment : Fragment() {
         }
         Handler(Looper.getMainLooper())
             .postDelayed({
+                /*
                 if(channel != null) {
                     findNavController().navigate(
                         R.id.action_radioSplashFragment_to_fragmentRadioChannels,
@@ -46,8 +49,11 @@ class RadioSplashFragment : Fragment() {
                     )
                 }else{
                     findNavController().navigate(R.id.action_radioSplashFragment_to_fragmentRadioChannels)
+                }*/
+                Intent(requireActivity() , RecordListActivity::class.java).apply {
+                    startActivity(this)
                 }
-            }, 2500)
+            }, 10)
         return view
     }
 }

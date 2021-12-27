@@ -8,7 +8,6 @@ import android.icu.util.Calendar
 import android.os.Build
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.training.radioapptrial.application.MainApplication
 import com.training.radioapptrial.channelrecorder.roomdb.RecordingAlarmsDatabase
 import com.training.radioapptrial.channelrecorder.roomdb.model.ChannelRecordingAlarmModel
@@ -19,15 +18,13 @@ import com.training.radioapptrial.channelsGetViewPlay.model.RadioChannelModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class AlarmsViewmodel
+class AlarmsViewModel
 @Inject
 constructor() : ViewModel() {
 

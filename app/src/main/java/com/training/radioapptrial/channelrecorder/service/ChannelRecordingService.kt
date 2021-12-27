@@ -10,7 +10,6 @@ import android.os.IBinder
 import android.util.Log
 import androidx.annotation.RequiresApi
 import com.training.radioapptrial.application.MainApplication
-import com.training.radioapptrial.channelrecorder.roomdb.RecordingAlarmsDatabase
 import com.training.radioapptrial.channelrecorder.roomdb.model.ChannelRecordingAlarmModel
 import com.training.radioapptrial.channelrecorder.util.AudioFileBuilder
 import com.training.radioapptrial.channelrecorder.util.Constants.NOTIFICATION_MESSAGE
@@ -18,15 +17,12 @@ import com.training.radioapptrial.channelrecorder.util.Constants.RECORDING_NOTIF
 import com.training.radioapptrial.channelrecorder.util.Constants.RECORD_CHANNEL_ID
 import com.training.radioapptrial.channelrecorder.util.Constants.RECORD_CHANNEL_NAME
 import com.training.radioapptrial.channelrecorder.util.Constants.RECORD_NOTIFICATION_ID
-import com.training.radioapptrial.channelrecorder.util.NetworkStateObserver
 import com.training.radioapptrial.channelrecorder.util.StreamDownloader
 import com.training.radioapptrial.channelsGetViewPlay.ui.MainActivity
 import com.training.radioapptrial.radioforegroundservice.exoplayer.PlayerNotificationManager
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
-import okhttp3.OkHttpClient
 import okhttp3.Request
-import java.io.IOException
 import java.net.SocketTimeoutException
 
 class ChannelRecordingService : Service() {

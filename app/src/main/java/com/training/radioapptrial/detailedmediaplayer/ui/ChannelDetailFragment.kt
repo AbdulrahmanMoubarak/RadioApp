@@ -1,29 +1,16 @@
 package com.training.radioapptrial.detailedmediaplayer.ui
 
-import android.app.AlarmManager
-import android.app.PendingIntent
-import android.content.Context
-import android.content.Intent
 import android.icu.util.Calendar
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.training.radioapptrial.R
-import com.training.radioapptrial.application.MainApplication
-import com.training.radioapptrial.channelrecorder.service.ChannelRecordBroadcastReciever
 import com.training.radioapptrial.channelrecorder.ui.RecordTimeDialogFragment
-import com.training.radioapptrial.channelrecorder.util.Constants.START_SERVICE_ACTION
-import com.training.radioapptrial.channelrecorder.util.Constants.STOP_SERVICE_ACTION
-import com.training.radioapptrial.channelrecorder.viewmodel.AlarmsViewmodel
+import com.training.radioapptrial.channelrecorder.viewmodel.AlarmsViewModel
 import com.training.radioapptrial.channelsGetViewPlay.model.RadioChannelModel
 import com.training.radioapptrial.channelsGetViewPlay.viewmodel.MediaViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,7 +23,7 @@ class ChannelDetailFragment : Fragment() {
     private var channel: RadioChannelModel? = null
     private var replay: Boolean? = null
     private val mediaViewModel: MediaViewModel by viewModels()
-    private val recorderViewModel: AlarmsViewmodel by viewModels()
+    private val recorderViewModel: AlarmsViewModel by viewModels()
     private var isPlaying = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
