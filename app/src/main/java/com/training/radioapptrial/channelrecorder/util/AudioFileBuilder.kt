@@ -14,10 +14,10 @@ import java.util.*
 object AudioFileBuilder {
 
     @Throws(FileNotFoundException::class)
-    fun writeToFile(applicationContext: Context, byteArray:ByteArray): Uri {
+    fun writeToFile(applicationContext: Context, byteArray:ByteArray, channelName: String): Uri {
 
         Log.d("here", "writeToFile: " + byteArray[0])
-        val name = String.format("radio-%s.wav", getCurrentDateTime())
+        val name = String.format("${channelName}-%s.wav", getCurrentDateTime())
         val outputDir = File(applicationContext.filesDir, OUTPUT_PATH)
         if (!outputDir.exists()) {
             outputDir.mkdirs() // should succeed

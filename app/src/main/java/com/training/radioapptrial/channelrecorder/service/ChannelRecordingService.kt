@@ -30,14 +30,15 @@ class ChannelRecordingService : Service() {
     lateinit var recording: ChannelRecordingAlarmModel
     var streamBytes = mutableListOf<Byte>()
     var successful = true
+    var channelName = ""
 
     private val job = Job()
     private val serviceScope = CoroutineScope(Dispatchers.IO + job)
 
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("UnspecifiedImmutableFlag")
-    private fun startForegroundService() {
-
+    private fun startForegroundService(channelName:String) {
+        this.channelName = channelName
         downloadStream()
 
         val notificationIntent = Intent(this, MainActivity::class.java)
@@ -50,7 +51,7 @@ class ChannelRecordingService : Service() {
 
         val notificationBuilder =
             PlayerNotificationManager.makeStatusNotification(
-                NOTIFICATION_MESSAGE,
+                NOTIFICATION_MESSAGE+channelName,
                 pendingIntent,
                 this,
                 RECORD_CHANNEL_ID,
@@ -70,7 +71,7 @@ class ChannelRecordingService : Service() {
         recording = intent?.getSerializableExtra("recording") as ChannelRecordingAlarmModel
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-            startForegroundService()
+            startForegroundService(recording.channel_name)
         else
             startForeground(2, Notification())
 
@@ -88,7 +89,7 @@ class ChannelRecordingService : Service() {
                     "Record saved successfully"
                 )
             }
-            AudioFileBuilder.writeToFile(applicationContext, streamBytes.toByteArray())
+            AudioFileBuilder.writeToFile(applicationContext, streamBytes.toByteArray(), channelName)
         }
     }
 
@@ -129,4 +130,6 @@ class ChannelRecordingService : Service() {
             streamBytes.add(iterator.next())
         }
     }
+
+
 }

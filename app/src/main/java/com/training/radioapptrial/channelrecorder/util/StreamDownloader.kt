@@ -14,10 +14,21 @@ class StreamDownloader {
                 if (!response.isSuccessful) throw IOException("Unexpected code $response")
                 while (!response.body!!.source().exhausted()) {
                     val byteArray = ByteArray(8192)
-                    val count2 = response.body!!.source().read(byteArray)
-                    emit(byteArray)
+                    val count = response.body!!.source().read(byteArray)
+                    emit(getResizedList(byteArray, count).toByteArray())
                 }
             }
         }
+    }
+
+    fun getResizedList(byteArray: ByteArray, size: Int):List<Byte>{
+        val iter = byteArray.iterator()
+        val list = mutableListOf<Byte>()
+        var count = 0
+        while (iter.hasNext() && count < size){
+            list.add(iter.next())
+            count++
+        }
+        return list
     }
 }

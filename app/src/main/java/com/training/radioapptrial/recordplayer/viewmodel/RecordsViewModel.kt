@@ -67,8 +67,7 @@ class RecordsViewModel
         mediaPlayer.start()
     }
 
-    override fun onCleared() {
-        super.onCleared()
+    fun releasePlayer(){
         mediaPlayer.release()
     }
 }
