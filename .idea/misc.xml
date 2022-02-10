@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/RadioAppTrial/app/src/main/res/drawable/ic_baseline_close_24.xml" value="0.18958333333333333" />
         <entry key="..\:/RadioAppTrial/app/src/main/res/drawable/ic_fullscreen_exit_svgrepo_com.xml" value="0.2866666666666667" />
         <entry key="..\:/RadioAppTrial/app/src/main/res/drawable/ic_pause_detail_svgrepo_com.xml" value="0.1859375" />
         <entry key="..\:/RadioAppTrial/app/src/main/res/drawable/ic_pause_svgrepo_com.xml" value="0.2866666666666667" />
@@ -23,9 +24,11 @@
         <entry key="..\:/RadioAppTrial/app/src/main/res/layout/fragment_radio_splash.xml" value="0.16979166666666667" />
         <entry key="..\:/RadioAppTrial/app/src/main/res/layout/fragment_record_time_dialog.xml" value="0.22282608695652173" />
         <entry key="..\:/RadioAppTrial/app/src/main/res/layout/mini_media_player.xml" value="0.21105072463768115" />
+        <entry key="..\:/RadioAppTrial/app/src/main/res/layout/radio_notification.xml" value="0.20697463768115942" />
         <entry key="..\:/RadioAppTrial/app/src/main/res/layout/record_item.xml" value="0.14375" />
         <entry key="..\:/RadioAppTrial/app/src/main/res/layout/spinner_dropdown_item.xml" value="0.14375" />
         <entry key="..\:/RadioAppTrial/app/src/main/res/layout/spinner_item_selected.xml" value="0.264" />
+        <entry key="..\:/RadioAppTrial/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.2911458333333333" />
       </map>
     </option>
   </component>

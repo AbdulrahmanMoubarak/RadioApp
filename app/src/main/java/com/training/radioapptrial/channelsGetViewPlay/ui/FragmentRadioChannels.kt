@@ -152,8 +152,9 @@ class FragmentRadioChannels : Fragment() {
     }
 
     private fun pausePlayer() {
+        mediaViewModel.pausePlayer()
         if(!mediaViewModel.isFailure) {
-            mediaViewModel.pausePlayer()
+            //mediaViewModel.pausePlayer()
             miniPlayer.pause()
         }
     }

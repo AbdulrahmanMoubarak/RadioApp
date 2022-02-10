@@ -8,7 +8,8 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:name=".application.MainApplication"
@@ -35,8 +36,7 @@
             android:enabled="true"
             android:exported="true" />
 
-        <receiver
-            android:name=".channelrecorder.service.ChannelRecordBroadcastReciever"
+        <receiver android:name=".channelrecorder.service.ChannelRecordBroadcastReciever"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -44,12 +44,32 @@
                 <action android:name="START_SERVICE" />
             </intent-filter>
         </receiver>
-        <receiver
-            android:name=".channelrecorder.service.DeviceStateChangeBroadcastReciever"
+
+        <receiver android:name=".channelrecorder.service.DeviceStateChangeBroadcastReciever"
+            android:enabled="true"
+            android:exported="true"
+            android:directBootAware="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.ACTION_USER_UNLOCKED" />
+                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".radioforegroundservice.service.RadioServiceBroadcastReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="play" />
+                <action android:name="exit" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".channelrecorder.service.PreAlarmBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="FIRE_PREALARAM"/>
             </intent-filter>
         </receiver>
 

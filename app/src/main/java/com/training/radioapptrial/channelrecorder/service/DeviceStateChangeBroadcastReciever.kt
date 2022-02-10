@@ -6,10 +6,13 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.ACTION_BOOT_COMPLETED
+import android.content.Intent.ACTION_LOCKED_BOOT_COMPLETED
+import android.util.Log
 import android.widget.Toast
 import com.training.radioapptrial.application.MainApplication
 import com.training.radioapptrial.channelrecorder.roomdb.RecordingAlarmsDatabase
 import com.training.radioapptrial.channelrecorder.util.Constants
+import com.training.radioapptrial.radioforegroundservice.exoplayer.PlayerNotificationManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
@@ -22,12 +25,19 @@ class DeviceStateChangeBroadcastReciever: BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
         val action = intent?.action
+        Log.i("here", "onReceive: Recieved")
+        Log.d("here", "onReceive: Recieved")
+
+        context?.let {  PlayerNotificationManager.createImmediateNotification(it, "Recording failed", "Internet connection error") }
         
-        if(action.equals(ACTION_BOOT_COMPLETED)){
-            MainApplication.getAppContext()?.let {
+        if(action.equals(ACTION_BOOT_COMPLETED) || action.equals(ACTION_LOCKED_BOOT_COMPLETED)){
+            context?.let {
                 database = RecordingAlarmsDatabase.getInstance(it)
             }
 
+
+
+            /*
             CoroutineScope(Dispatchers.Main).launch {
                 database?.getAllAlarms()?.collect {
                     for(recording in it){
@@ -62,6 +72,7 @@ class DeviceStateChangeBroadcastReciever: BroadcastReceiver() {
                     }
                 }
             }
+            */
         }
     }
 

@@ -115,6 +115,7 @@ dependencies {
     // optional - Kotlin Extensions and Coroutines support for Room
     implementation("androidx.room:room-ktx:$roomVersion")
 
-
+    //notification media style
+    implementation "androidx.media:media:1.4.3"
 
 }

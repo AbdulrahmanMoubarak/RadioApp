@@ -12,8 +12,9 @@ import com.training.radioapptrial.application.MainApplication
 import com.training.radioapptrial.channelrecorder.roomdb.RecordingAlarmsDatabase
 import com.training.radioapptrial.channelrecorder.roomdb.model.ChannelRecordingAlarmModel
 import com.training.radioapptrial.channelrecorder.service.ChannelRecordBroadcastReciever
-import com.training.radioapptrial.channelrecorder.util.Constants.START_SERVICE_ACTION
-import com.training.radioapptrial.channelrecorder.util.Constants.STOP_SERVICE_ACTION
+import com.training.radioapptrial.channelrecorder.service.PreAlarmBroadcastReceiver
+import com.training.radioapptrial.channelrecorder.util.Constants.ALARM_PREFIRING_TIME_MILLIS
+import com.training.radioapptrial.channelrecorder.util.Constants.PREALARM_ACTION
 import com.training.radioapptrial.channelsGetViewPlay.model.RadioChannelModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -52,31 +53,21 @@ constructor() : ViewModel() {
                     val recording_id = it
 
                     recording_id.let {
-                        val startPendingIntent = getAlarmIntent(START_SERVICE_ACTION, it)
-                        val stopPendingIntent = getAlarmIntent(STOP_SERVICE_ACTION, it)
+                        val preAlarmPendingIntent =getPreAlarmIntent(it)
 
                         val alarm = MainApplication.getAppContext()
                             ?.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
 
-                        alarm?.setExactAndAllowWhileIdle(
+                        alarm?.setRepeating(
                             AlarmManager.RTC_WAKEUP,
-                            calendar.timeInMillis,
-                            //AlarmManager.INTERVAL_DAY,
-                            startPendingIntent
+                            calendar.timeInMillis - ALARM_PREFIRING_TIME_MILLIS,
+                            AlarmManager.INTERVAL_DAY,
+                            preAlarmPendingIntent
                         )
-
 
 
                         calendar.add(Calendar.MINUTE, duration)
                         //calendar.add(Calendar.SECOND, 15)  //for testing
-
-
-                        alarm?.setExactAndAllowWhileIdle(
-                            AlarmManager.RTC_WAKEUP,
-                            calendar.timeInMillis,
-                            //AlarmManager.INTERVAL_DAY,
-                            stopPendingIntent
-                        )
 
 
                         withContext(Dispatchers.Main) {
@@ -89,8 +80,6 @@ constructor() : ViewModel() {
                     }
                 }
             }
-
-
         }
     }
 
@@ -106,5 +95,23 @@ constructor() : ViewModel() {
         return PendingIntent.getBroadcast(MainApplication.getAppContext(), 0, intent, 0).apply {
 
         }
+    }
+
+    private fun getPreAlarmIntent( alarm_id: Int):PendingIntent{
+
+        val intent = Intent(
+            MainApplication.getAppContext(),
+            PreAlarmBroadcastReceiver::class.java
+        ).apply {
+            action =  PREALARM_ACTION
+            setPackage(alarm_id.toString())
+        }
+
+        return PendingIntent.getBroadcast(
+            MainApplication.getAppContext(),
+            0,
+            intent,
+            0
+        )
     }
 }

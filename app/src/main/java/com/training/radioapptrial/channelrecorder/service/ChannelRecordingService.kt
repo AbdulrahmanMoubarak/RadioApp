@@ -23,6 +23,7 @@ import com.training.radioapptrial.radioforegroundservice.exoplayer.PlayerNotific
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import okhttp3.Request
+import java.net.SocketException
 import java.net.SocketTimeoutException
 
 class ChannelRecordingService : Service() {
@@ -37,7 +38,7 @@ class ChannelRecordingService : Service() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("UnspecifiedImmutableFlag")
-    private fun startForegroundService(channelName:String) {
+    private fun startForegroundService(channelName: String) {
         this.channelName = channelName
         downloadStream()
 
@@ -51,7 +52,7 @@ class ChannelRecordingService : Service() {
 
         val notificationBuilder =
             PlayerNotificationManager.makeStatusNotification(
-                NOTIFICATION_MESSAGE+channelName,
+                NOTIFICATION_MESSAGE + channelName,
                 pendingIntent,
                 this,
                 RECORD_CHANNEL_ID,
@@ -86,7 +87,7 @@ class ChannelRecordingService : Service() {
                 PlayerNotificationManager.createImmediateNotification(
                     it,
                     "Finished recording",
-                    "Record saved successfully"
+                    "Record saved successfully. Tab to view"
                 )
             }
             AudioFileBuilder.writeToFile(applicationContext, streamBytes.toByteArray(), channelName)
@@ -105,22 +106,32 @@ class ChannelRecordingService : Service() {
             .header("Content-type", "application/octet-stream")
             .build()
 
-        try {
-            serviceScope.launch {
+        serviceScope.launch {
+            try {
                 streamDownloader.startDownloadingStream(request).collect {
                     saveByteArrayToRecordList(it)
                 }
+            } catch (e: SocketTimeoutException) {
+                successful = false
+                MainApplication.getAppContext()?.let {
+                    PlayerNotificationManager.createImmediateNotification(
+                        it,
+                        "Recording inturrupted",
+                        "Network connection timed out"
+                    )
+                }
+                stopSelf()
+            } catch (e: SocketException) {
+                successful = false
+                MainApplication.getAppContext()?.let {
+                    PlayerNotificationManager.createImmediateNotification(
+                        it,
+                        "Recording inturrupted",
+                        "Network connection error"
+                    )
+                }
+                stopSelf()
             }
-        } catch (e: SocketTimeoutException) {
-            successful = false
-            MainApplication.getAppContext()?.let {
-                PlayerNotificationManager.createImmediateNotification(
-                    it,
-                    "Recording inturrupted",
-                    "Network connection timed out"
-                )
-            }
-            stopSelf()
         }
     }
 
